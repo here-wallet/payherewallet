@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 import Account from "../../core/Account";
+import { showError } from "../../core/utils";
 import { Button } from "../../uikit/Button";
 import { Amount, Title } from "../../uikit/Title";
 import * as S from "./styled";
@@ -26,7 +27,7 @@ const ApproveReceive = ({ account }: { account: Account | null }) => {
     account
       .receiveMoney(account.phone)
       .then(navigate)
-      .catch(() => alert("receiveMoney error"));
+      .catch(() => showError("Receive money error"));
   };
 
   if (account?.phone == null) {

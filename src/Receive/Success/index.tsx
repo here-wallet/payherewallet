@@ -1,6 +1,7 @@
 import { Navigate, useNavigate } from "react-router-dom";
 import imageUrl from "../../assets/rock.png";
 import Account from "../../core/Account";
+import { showError } from "../../core/utils";
 import { LinkButton } from "../../uikit/Button";
 import { Title } from "../../uikit/Title";
 import * as S from "./styled";
@@ -12,7 +13,7 @@ const ReceiveSuccess = ({ account }: { account: Account | null }) => {
     account
       .unlinkPhone(account.phone)
       .then(navigate)
-      .catch(() => alert("unlinkPhone error"));
+      .catch(() => showError("unlinkPhone error"));
   };
 
   if (account?.phone == null) {

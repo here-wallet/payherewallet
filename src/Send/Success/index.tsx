@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import imageUrl from "../../assets/rock.png";
 import Account from "../../core/Account";
 import { SmsRequest } from "../../core/api";
+import { showError } from "../../core/utils";
 import { Title } from "../../Homepage/styled";
 import { Amount } from "../../uikit/Title";
 import * as S from "./styled";
@@ -13,7 +14,7 @@ const SendSuccess = ({ account }: { account: Account | null }) => {
     account
       ?.completeSendMoney()
       .then(setData)
-      .catch((e) => alert("completeSendMoney error"));
+      .catch((e) => showError("completeSendMoney error"));
   }, [account, setData]);
 
   if (data == null) {

@@ -14,49 +14,23 @@ export interface SmsRequest {
   contact_name_from: string;
 }
 
-class AuthStorage {
-  STORAGE_KEY = "payherewallet:token";
-
-  setToken(token: string | null) {
-    localStorage.setItem(this.STORAGE_KEY, token ? token : "");
-  }
-
-  getToken() {
-    return localStorage.getItem(this.STORAGE_KEY);
-  }
-}
-
 class Api {
-  private storage = new AuthStorage();
   private endpoint = "https://api.herewallet.app";
-
-  get isAuth() {
-    return !!this.storage.getToken();
-  }
-
-  logout() {
-    this.storage.setToken(null);
-  }
 
   async fetch(route: string, request: RequestInit) {
     const res = await fetch(`${this.endpoint}/api/v1/${route}`, {
       ...request,
       headers: {
         ...request.headers,
-        Authorization: this.storage.getToken() ?? "",
       },
     });
 
-    return await res.json();
-  }
+    if (res.status >= 200 && res.status <= 300) {
+      return await res.json();
+    }
 
-  async auth(request: AuthRequest) {
-    const data = await this.fetch("user/auth", {
-      method: "POST",
-      body: JSON.stringify(request),
-    });
-
-    this.storage.setToken(data.token);
+    const data = await res.text();
+    throw Error(data);
   }
 
   async sendSms(request: SmsRequest) {

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate, Navigate } from "react-router-dom";
 import Account from "../../core/Account";
 import { useWallet } from "../../core/useWallet";
+import { formatPhone, validatePhone } from "../../core/utils";
 import { Button } from "../../uikit/Button";
 import { Input } from "../../uikit/Input";
 import { Title } from "../../uikit/Title";
@@ -13,6 +14,7 @@ const EnterNFT = ({ account }: { account: Account | null }) => {
 
   const [phone, setPhone] = useState("");
   const [receiver, setReceiver] = useState("");
+  const isInvalid = !validatePhone(phone) || !receiver;
 
   const handleTransfer = async () => {
     if (account == null) return;
@@ -47,10 +49,12 @@ const EnterNFT = ({ account }: { account: Account | null }) => {
       />
       <Input
         value={phone}
-        onChange={(e) => setPhone(e.target.value)}
-        placeholder="Receiver phone"
+        onChange={(e) => setPhone(formatPhone(e.target.value))}
+        placeholder="Receiver phone (+1)"
       />
-      <Button onClick={handleTransfer}>Review</Button>
+      <Button onClick={handleTransfer} disabled={isInvalid}>
+        Review
+      </Button>
     </S.Section>
   );
 };

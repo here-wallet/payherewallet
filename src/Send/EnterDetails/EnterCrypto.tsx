@@ -2,7 +2,14 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Account from "../../core/Account";
 import { useWallet } from "../../core/useWallet";
-import { changeSearch, getSearch } from "../../core/utils";
+import {
+  changeSearch,
+  formatAmount,
+  formatPhone,
+  getSearch,
+  showError,
+  validatePhone,
+} from "../../core/utils";
 import { Button } from "../../uikit/Button";
 import { Input } from "../../uikit/Input";
 import { Title } from "../../uikit/Title";
@@ -19,15 +26,7 @@ const EnterCrypto = ({ account }: { account: Account | null }) => {
   const [amount, setAmount] = useState(initSearch.amount || "");
   const [phone, setPhone] = useState(initSearch.phone || "");
   const [receiver, setReceiver] = useState(initSearch.receiver || "");
-  const isInvalid = !amount || !phone || !receiver;
-
-  const handleTransfer = async () => {
-    if (account == null) {
-      return app?.selectorModal.show();
-    }
-
-    account.sendMoney(phone, amount, receiver).then((path) => navigate(path));
-  };
+  const isInvalid = isNaN(+amount) || !validatePhone(phone) || !receiver;
 
   useEffect(() => {
     if (firstCall.current) {
@@ -38,11 +37,16 @@ const EnterCrypto = ({ account }: { account: Account | null }) => {
     changeSearch({ phone, amount, receiver });
   }, [phone, amount, receiver]);
 
-  const toNFT = () => {
-    if (app?.account) {
-      return navigate("/send/nft");
-    }
+  const handleTransfer = async () => {
+    if (account == null) return app?.selectorModal.show();
+    account
+      .sendMoney(phone, amount, receiver)
+      .then((path) => navigate(path))
+      .catch(() => showError("sendMoney error"));
+  };
 
+  const toNFT = () => {
+    if (app?.account) return navigate("/send/nft");
     app?.selectorModal.show();
   };
 
@@ -58,8 +62,9 @@ const EnterCrypto = ({ account }: { account: Account | null }) => {
 
       <Input
         value={amount}
-        onChange={(e) => setAmount(e.target.value)}
+        onChange={(e: any) => setAmount(formatAmount(e.target.value))}
         placeholder="Amount"
+        type="tel"
       />
       <Input
         value={receiver}
@@ -68,8 +73,9 @@ const EnterCrypto = ({ account }: { account: Account | null }) => {
       />
       <Input
         value={phone}
-        onChange={(e) => setPhone(e.target.value)}
-        placeholder="Receiver phone"
+        onChange={(e) => setPhone(formatPhone(e.target.value))}
+        placeholder="Receiver phone (+1)"
+        type="tel"
       />
       <Button onClick={handleTransfer} disabled={isInvalid}>
         {app?.account ? "Review" : "Connect wallet"}

@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 import Account from "../../core/Account";
-import { Button, StrokeButton } from "../../uikit/Button";
+import { showError } from "../../core/utils";
+import { Button, LinkButton, StrokeButton } from "../../uikit/Button";
 import { Input } from "../../uikit/Input";
 import { Title } from "../../uikit/Title";
 import * as S from "./styled";
@@ -30,7 +31,7 @@ const EnterPhone = ({ account }: { account: Account | null }) => {
     await account?.api
       .sendPhone(phone, account.accountId)
       .then(setPhoneId)
-      .catch(() => alert("error"));
+      .catch(() => showError("sendPhone error"));
 
     setLoading(false);
   };
@@ -41,33 +42,37 @@ const EnterPhone = ({ account }: { account: Account | null }) => {
 
     await account.api
       .allocateNearAccount(code, phoneId, account.accountId)
-      .catch(() => alert("error"));
+      .then(() => {
+        account.setupPhone(phone);
+        navigate("/receive/approve");
+      })
+      .catch(() => showError("SMS code incorrect"));
 
-    account.setupPhone(phone);
-    navigate("/receive/approve");
     setLoading(false);
   };
 
   if (phoneId) {
-    if (isLoading) {
-      return (
-        <S.Section>
-          <Title>Loading...</Title>
-        </S.Section>
-      );
-    }
-
     return (
       <S.Section>
         <Title>Verify phone number</Title>
-        <S.Phone>Enter the code sent to +{phone}</S.Phone>
+        <S.Phone>
+          Enter the code sent to <b>{phone}</b>
+        </S.Phone>
         <Input
           value={code}
           onChange={(e) => setCode(e.target.value)}
           placeholder="SMS code"
+          disabled={isLoading}
         />
-        <Button onClick={handleVerify}>Verify</Button>
-        <StrokeButton onClick={() => setPhoneId(null)}>Back</StrokeButton>
+        <Button onClick={handleVerify} disabled={isLoading}>
+          {isLoading ? "Loading..." : "Verify"}
+        </Button>
+        <LinkButton
+          style={{ width: "100%", marginTop: 16 }}
+          onClick={() => setPhoneId(null)}
+        >
+          Back
+        </LinkButton>
       </S.Section>
     );
   }
@@ -81,7 +86,7 @@ const EnterPhone = ({ account }: { account: Account | null }) => {
         placeholder="Phone number"
       />
       <Button onClick={handlePhone} disabled={isLoading}>
-        {isLoading ? "Loading" : "Continue"}
+        {isLoading ? "Loading..." : "Continue"}
       </Button>
     </S.Section>
   );

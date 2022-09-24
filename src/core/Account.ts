@@ -56,14 +56,16 @@ class Account {
     return "/";
   }
 
-  /** Memoize phone hash */
+  /** Memoize phone hash (+ prefix agnostic)*/
   async getPhoneHash(phone: string) {
-    if (this.hashes[phone]) {
-      return this.hashes[phone];
+    const formatted = "+" + phone.replace("+", "");
+
+    if (this.hashes[formatted]) {
+      return this.hashes[formatted];
     }
 
-    const { hash } = await this.api.getPhoneHash(phone);
-    this.hashes[phone] = hash;
+    const { hash } = await this.api.getPhoneHash(formatted);
+    this.hashes[formatted] = hash;
     return hash;
   }
 
