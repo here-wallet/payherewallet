@@ -3,8 +3,10 @@ import { Button } from "../../uikit/Button";
 import { Input } from "../../uikit/Input";
 
 export const Section = styled.div`
-  width: 343px;
+  max-width: 343px;
+  width: 100%;
   margin: auto;
+  padding: 16px;
 
   ${Input} {
     margin-top: 16px;
@@ -20,18 +22,4 @@ export const Section = styled.div`
 
 export const Phone = styled.p`
   text-align: center;
-`;
-
-export const Title = styled.h2`
-  margin: 0;
-  font-family: "CabinetGrotesk";
-  font-style: normal;
-  font-weight: 900;
-  font-size: 40px;
-  line-height: 50px;
-
-  text-align: center;
-  font-feature-settings: "liga" off;
-
-  color: #2c3034;
 `;

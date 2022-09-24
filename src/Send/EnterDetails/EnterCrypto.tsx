@@ -1,31 +1,59 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Account from "../../core/Account";
+import { useWallet } from "../../core/useWallet";
+import { changeSearch, getSearch } from "../../core/utils";
 import { Button } from "../../uikit/Button";
 import { Input } from "../../uikit/Input";
+import { Title } from "../../uikit/Title";
 import * as S from "./styled";
 
+const initSearch = getSearch();
+console.log(initSearch);
+
 const EnterCrypto = ({ account }: { account: Account | null }) => {
-  const [amount, setAmount] = useState("");
-  const [phone, setPhone] = useState("");
-  const [sender, setSender] = useState("");
-  const [receiver, setReceiver] = useState("");
+  const app = useWallet();
+  const navigate = useNavigate();
+  const firstCall = useRef(true);
+
+  const [amount, setAmount] = useState(initSearch.amount || "");
+  const [phone, setPhone] = useState(initSearch.phone || "");
+  const [receiver, setReceiver] = useState(initSearch.receiver || "");
+  const isInvalid = !amount || !phone || !receiver;
 
   const handleTransfer = async () => {
-    if (account == null) return;
-    account.sendMoney(phone, amount, sender, receiver);
+    if (account == null) {
+      return app?.selectorModal.show();
+    }
+
+    account.sendMoney(phone, amount, receiver).then((path) => navigate(path));
+  };
+
+  useEffect(() => {
+    if (firstCall.current) {
+      firstCall.current = false;
+      return;
+    }
+
+    changeSearch({ phone, amount, receiver });
+  }, [phone, amount, receiver]);
+
+  const toNFT = () => {
+    if (app?.account) {
+      return navigate("/send/nft");
+    }
+
+    app?.selectorModal.show();
   };
 
   return (
     <S.Section>
-      <S.Title>Enter details</S.Title>
+      <Title>Enter details</Title>
       <S.Tabs>
-        <Link to="/send/crypto">
-          <S.Tab isSelected>Crypto</S.Tab>
-        </Link>
-        <Link to="/send/nft">
-          <S.Tab>NFT</S.Tab>
-        </Link>
+        <S.Tab onClick={() => navigate("/send/crypto")} isSelected>
+          Crypto
+        </S.Tab>
+        <S.Tab onClick={toNFT}>NFT</S.Tab>
       </S.Tabs>
 
       <Input
@@ -34,21 +62,18 @@ const EnterCrypto = ({ account }: { account: Account | null }) => {
         placeholder="Amount"
       />
       <Input
-        value={phone}
-        onChange={(e) => setPhone(e.target.value)}
-        placeholder="Phone number"
-      />
-      <Input
-        value={sender}
-        onChange={(e) => setSender(e.target.value)}
-        placeholder="Sender name"
-      />
-      <Input
         value={receiver}
         onChange={(e) => setReceiver(e.target.value)}
         placeholder="Receiver name"
       />
-      <Button onClick={handleTransfer}>Review</Button>
+      <Input
+        value={phone}
+        onChange={(e) => setPhone(e.target.value)}
+        placeholder="Receiver phone"
+      />
+      <Button onClick={handleTransfer} disabled={isInvalid}>
+        {app?.account ? "Review" : "Connect wallet"}
+      </Button>
     </S.Section>
   );
 };

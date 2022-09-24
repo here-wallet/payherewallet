@@ -12,6 +12,8 @@ import EnterPhone from "./Receive/EnterPhone";
 import ReceiveSuccess from "./Receive/Success";
 import EnterCrypto from "./Send/EnterDetails/EnterCrypto";
 import EnterNFT from "./Send/EnterDetails/EnterNFT";
+import Connect from "./Receive/Connect";
+import InstallHere from "./Receive/InstallHere";
 
 const App = () => {
   const app = useWallet();
@@ -21,7 +23,6 @@ const App = () => {
     if (app?.wallet == null) return;
     const account = new Account(app.wallet);
     setAccount(account);
-    account.initialize();
   }, [app?.wallet]);
 
   const handleLogin = async () => {
@@ -41,7 +42,15 @@ const App = () => {
           path="/receive/success"
           element={<ReceiveSuccess account={account} />}
         />
-        <Route path="/receive" element={<EnterPhone account={account} />} />
+        <Route
+          path="/receive/verify"
+          element={<EnterPhone account={account} />}
+        />
+        <Route path="/receive/here" element={<InstallHere />} />
+        <Route
+          path="/receive"
+          element={<Connect account={account} onLogin={handleLogin} />}
+        />
         <Route
           path="/send/success"
           element={<SendSuccess account={account} />}
@@ -62,8 +71,10 @@ const App = () => {
           <Appstore />
         </a>
         <p>
-          Don’t have an account yet? Visit{" "}
-          <a href="https://herewallet.app">herewallet.app</a>
+          Don’t have an account yet?{" "}
+          <nobr>
+            Visit <a href="https://herewallet.app">herewallet.app</a>
+          </nobr>
         </p>
       </Footer>
     </Container>
@@ -76,6 +87,7 @@ export const Footer = styled.footer`
   align-items: center;
   flex-direction: column;
   margin-top: 32px;
+  padding: 0 16px;
 
   p {
     font-family: "Manrope";

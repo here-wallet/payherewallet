@@ -52,17 +52,3 @@ export const Card = styled.div`
     color: #2c3034;
   }
 `;
-
-export const Title = styled.h2`
-  margin: 0;
-  font-family: "CabinetGrotesk";
-  font-style: normal;
-  font-weight: 900;
-  font-size: 40px;
-  line-height: 50px;
-
-  text-align: center;
-  font-feature-settings: "liga" off;
-
-  color: #2c3034;
-`;

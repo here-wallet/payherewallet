@@ -2,13 +2,12 @@ import { Link } from "react-router-dom";
 import { Button, StrokeButton } from "../uikit/Button";
 import * as S from "./styled";
 
+
 const Homepage = () => {
   return (
     <S.Section>
       <S.Title>
-        Exchange crypto with
-        <br />
-        friends via phone number
+        Exchange crypto with <nobr>friends via</nobr> phone number
       </S.Title>
       <S.Buttons>
         <Link to="/send">

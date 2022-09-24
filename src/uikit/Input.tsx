@@ -18,14 +18,15 @@ export const Input = styled.input`
   color: #2c3034;
 
   padding: 0 16px;
+  /* transform: translate(-4px, -4px); */
 
   border: 1px solid #2c3034;
   box-shadow: 4px 4px 0px #2c3034;
   border-radius: 16px;
   transition: 0.2s box-shadow, 0.2s transform;
 
-  &:hover {
+  /* &:hover {
     box-shadow: 0 0 0 #2c3034;
-    transform: translate(4px, 4px);
-  }
+    transform: translate(0, 0);
+  } */
 `;

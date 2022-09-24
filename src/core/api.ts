@@ -72,10 +72,23 @@ class Api {
     });
   }
 
-  async sendPhone(phone: string) {
+  async sendPhone(phone: string, account: string) {
     const data = await this.fetch("phone/send_code", {
       method: "POST",
-      body: JSON.stringify({ phone }),
+      body: JSON.stringify({ phone, near_account_id: account }),
+    });
+
+    return data.phone_number_id;
+  }
+
+  async allocateNearAccount(code: string, phoneId: number, account: string) {
+    const data = await this.fetch("phone/allocate_near_account_id", {
+      method: "POST",
+      body: JSON.stringify({
+        code,
+        near_account_id: account,
+        phone_number_id: phoneId,
+      }),
     });
 
     return data.phone_number_id;

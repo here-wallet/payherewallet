@@ -1,5 +1,6 @@
 import Account from "../../core/Account";
 import { SmsRequest } from "../../core/api";
+import { Title } from "../../uikit/Title";
 import * as S from "./styled";
 
 interface Props {
@@ -10,8 +11,8 @@ interface Props {
 const ReviewDetails = ({ account, details }: Props) => {
   return (
     <S.Section>
-      <S.Title>Review</S.Title>
-      <S.Title>{details.amount} NEAR</S.Title>
+      <Title>Review</Title>
+      <Title>{details.amount} NEAR</Title>
       <S.Card></S.Card>
     </S.Section>
   );

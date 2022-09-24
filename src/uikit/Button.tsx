@@ -24,6 +24,12 @@ export const Button = styled.button`
   line-height: 22px;
   text-align: center;
   color: #ffffff;
+
+  &:disabled {
+    color: #6b6661;
+    background: #cbc6c5;
+    cursor: default;
+  }
 `;
 
 export const StrokeButton = styled(Button)`

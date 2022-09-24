@@ -2,6 +2,7 @@ import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { PinkButton } from "../uikit/Button";
 import { ReactComponent as Logo } from "../assets/logo.svg";
+import { ReactComponent as LogoutIcon } from "../assets/icons/logout.svg";
 
 const formatAccount = (account: string) => {
   return account.length > 12
@@ -17,7 +18,9 @@ export const Header = ({ account, onLogout, onLogin }: any) => {
       </Link>
 
       {account ? (
-        <PinkButton onClick={onLogout}>{formatAccount(account)}</PinkButton>
+        <PinkButton onClick={onLogout}>
+          {formatAccount(account)} <LogoutIcon />
+        </PinkButton>
       ) : (
         <PinkButton onClick={onLogin}>Connect wallet</PinkButton>
       )}
@@ -33,4 +36,17 @@ export const SHeader = styled.header`
   box-sizing: border-box;
   padding: 32px 64px;
 
+  @media (max-width: 780px) {
+    padding: 16px 16px;
+
+    a svg {
+      width: 100px;
+    }
+
+    ${PinkButton} {
+      height: 32px;
+      border-radius: 12px;
+      font-size: 0.8em;
+    }
+  }
 `;

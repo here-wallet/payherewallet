@@ -54,7 +54,9 @@ export function AppContextProvider({ children }: Props) {
         ],
       });
 
-      const selectorModal = setupModal(selector, { contractId: "" });
+      const selectorModal = setupModal(selector, {
+        contractId: process.env.REACT_APP_CONTRACT!,
+      });
 
       selector.store.observable.subscribe(async () => {
         const wallet = await selector.wallet().catch(() => null);

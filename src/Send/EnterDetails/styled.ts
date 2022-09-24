@@ -3,8 +3,9 @@ import { Button } from "../../uikit/Button";
 import { Input } from "../../uikit/Input";
 
 export const Section = styled.div`
-  width: 343px;
+  max-width: 343px;
   margin: auto;
+  padding: 16px;
 
   ${Input} {
     margin-top: 16px;
@@ -15,32 +16,12 @@ export const Section = styled.div`
   }
 `;
 
-export const Title = styled.h2`
-  margin: 0;
-  font-family: "CabinetGrotesk";
-  font-style: normal;
-  font-weight: 900;
-  font-size: 40px;
-  line-height: 50px;
-
-  text-align: center;
-  font-feature-settings: "liga" off;
-
-  color: #2c3034;
-`;
-
 export const Tabs = styled.div`
   background: #ebdedc;
   border-radius: 16px;
   height: 32px;
   display: flex;
   margin: 16px 0;
-
-  a {
-    flex: 1;
-    height: 32px;
-    text-decoration: none;
-  }
 `;
 
 export const Tab = styled.div<{ isSelected?: boolean }>`
@@ -48,6 +29,9 @@ export const Tab = styled.div<{ isSelected?: boolean }>`
   color: ${(p) => (p.isSelected ? "#fff" : "#2c3034")};
   border-radius: 16px;
   height: 32px;
+  flex: 1;
+
+  cursor: pointer;
 
   display: flex;
   align-items: center;
