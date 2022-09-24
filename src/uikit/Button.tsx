@@ -32,6 +32,21 @@ export const Button = styled.button`
   }
 `;
 
+export const LinkButton = styled.button`
+  border: none;
+  outline: none;
+  background: transparent;
+  cursor: pointer;
+
+  font-family: "Manrope";
+  font-style: normal;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 22px;
+  text-decoration-line: underline;
+  color: #fd84e3;
+`;
+
 export const StrokeButton = styled(Button)`
   background: transparent;
   border: 2px solid #2c3034;

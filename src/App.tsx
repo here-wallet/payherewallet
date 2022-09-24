@@ -14,16 +14,11 @@ import EnterCrypto from "./Send/EnterDetails/EnterCrypto";
 import EnterNFT from "./Send/EnterDetails/EnterNFT";
 import Connect from "./Receive/Connect";
 import InstallHere from "./Receive/InstallHere";
+import ApproveReceive from "./Receive/ApproveReceive";
 
 const App = () => {
   const app = useWallet();
-  const [account, setAccount] = useState<Account | null>(null);
-
-  useEffect(() => {
-    if (app?.wallet == null) return;
-    const account = new Account(app.wallet);
-    setAccount(account);
-  }, [app?.wallet]);
+  const account = app?.account ?? null;
 
   const handleLogin = async () => {
     app?.selectorModal.show();
@@ -33,7 +28,7 @@ const App = () => {
     <Container>
       <Header
         account={app?.account?.accountId ?? ""}
-        onLogout={() => account?.logout()}
+        onLogout={() => app?.account?.logout()}
         onLogin={handleLogin}
       />
 
@@ -41,6 +36,10 @@ const App = () => {
         <Route
           path="/receive/success"
           element={<ReceiveSuccess account={account} />}
+        />
+        <Route
+          path="/receive/approve"
+          element={<ApproveReceive account={account} />}
         />
         <Route
           path="/receive/verify"

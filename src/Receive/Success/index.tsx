@@ -1,24 +1,40 @@
+import { Navigate, useNavigate } from "react-router-dom";
 import imageUrl from "../../assets/rock.png";
 import Account from "../../core/Account";
+import { LinkButton } from "../../uikit/Button";
+import { Title } from "../../uikit/Title";
 import * as S from "./styled";
 
 const ReceiveSuccess = ({ account }: { account: Account | null }) => {
+  const navigate = useNavigate();
+  const handleUnlink = () => {
+    if (account?.phone == null) return;
+    account
+      .unlinkPhone(account.phone)
+      .then(navigate)
+      .catch(() => alert("unlinkPhone error"));
+  };
+
+  if (account?.phone == null) {
+    return <Navigate to="/" />;
+  }
+
   return (
     <S.Section>
       <img src={imageUrl} alt="success" />
-      <S.Card>
-        <h2>
-          1<span>NEAR</span>
-        </h2>
-        <p>
-          You have successfully transfered money
-          <br />
-          to <b>{"phone"}</b>.
-          <br />
-          User will receive an SMS with all the details
-        </p>
-        <a href={`https://explorer.near.org/?query=${""}`}>Transaction link</a>
-      </S.Card>
+
+      <Title>
+        Your phone is linked
+        <br />
+        to near account
+      </Title>
+
+      <p>
+        Now all transfers will immediately
+        <br /> be sent to your account
+      </p>
+
+      <LinkButton onClick={handleUnlink}>Unlink phone</LinkButton>
     </S.Section>
   );
 };

@@ -1,10 +1,5 @@
 import React, { useEffect, useState, useContext } from "react";
-import {
-  WalletSelector,
-  Wallet,
-  Account,
-  NetworkId,
-} from "@near-wallet-selector/core";
+import { WalletSelector, Wallet, NetworkId } from "@near-wallet-selector/core";
 import { setupWalletSelector } from "@near-wallet-selector/core";
 import {
   setupModal,
@@ -18,13 +13,15 @@ import { setupNightly } from "@near-wallet-selector/nightly";
 import { setupMeteorWallet } from "@near-wallet-selector/meteor-wallet";
 import { setupLedger } from "@near-wallet-selector/ledger";
 import { setupDefaultWallets } from "@near-wallet-selector/default-wallets";
-import "@near-wallet-selector/modal-ui/styles.css";
+import { JsonRpcProvider } from "near-api-js/lib/providers";
 import { setupHereWallet } from "./here-wallet";
+
+import "@near-wallet-selector/modal-ui/styles.css";
+import Account from "./Account";
 
 type AppServices = {
   selector: WalletSelector;
   selectorModal: WalletSelectorModal;
-  wallet: Wallet | null;
   account: Account | null;
 };
 
@@ -58,19 +55,28 @@ export function AppContextProvider({ children }: Props) {
         contractId: process.env.REACT_APP_CONTRACT!,
       });
 
+      const { network } = selector.options;
+      const provider = new JsonRpcProvider({ url: network.nodeUrl });
+
       selector.store.observable.subscribe(async () => {
         const wallet = await selector.wallet().catch(() => null);
-        const account = await wallet?.getAccounts();
+        if (wallet == null) {
+          setContext({ account: null, selector, selectorModal });
+          return;
+        }
+
+        const accounts = await wallet.getAccounts();
+        const name = accounts[0].accountId;
+        const account = new Account(name, wallet, provider);
+
         setContext({
+          account,
           selector,
           selectorModal,
-          wallet,
-          account: account?.[0] ?? null,
         });
       });
 
-      const wallet = await selector.wallet().catch(() => null);
-      setContext({ selector, selectorModal, wallet, account: null });
+      setContext({ selector, selectorModal, account: null });
     };
 
     init();

@@ -23,7 +23,7 @@ const Connect = ({ account, onLogin }: Props) => {
   return (
     <S.Section>
       <Title>
-        Select a way to receive <br /> 10.12 NEAR
+        Select a way to receive <br />
       </Title>
       <S.Button onClick={() => navigate("/receive/here")}>
         <HereIcon />

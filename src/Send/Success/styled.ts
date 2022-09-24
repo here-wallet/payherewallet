@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { Amount } from "../../uikit/Title";
 
 export const Section = styled.div`
   margin: auto;
@@ -16,32 +17,35 @@ export const Section = styled.div`
   img {
     width: 200px;
   }
+
+  @media (max-width: 720px) {
+    padding: 16px;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 24px;
+
+    margin: 16px;
+    text-align: center;
+
+    ${Amount} {
+      display: block;
+      margin: 0 auto;
+    }
+
+    img {
+      width: 100px;
+    }
+  }
 `;
 
 export const Card = styled.div`
-  width: 426px;
+  max-width: 426px;
+  width: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
-
-  h2 {
-    display: flex;
-    align-items: flex-end;
-
-    font-family: "CabinetGrotesk";
-    font-style: normal;
-    font-weight: 900;
-    font-size: 64px;
-    line-height: 79px;
-    color: #2c3034;
-    margin: 0;
-
-    span {
-      margin-left: 8px;
-      line-height: 62px;
-      font-size: 32px;
-    }
-  }
+  align-items: center;
 
   p {
     font-family: "Manrope";
@@ -50,5 +54,6 @@ export const Card = styled.div`
     font-size: 16px;
     line-height: 22px;
     color: #2c3034;
+    text-align: center;
   }
 `;
