@@ -3,6 +3,18 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@near-wallet-selector/core": "^7.0.3",
+    "@near-wallet-selector/default-wallets": "^7.0.3",
+    "@near-wallet-selector/ledger": "^7.0.3",
+    "@near-wallet-selector/math-wallet": "^7.0.3",
+    "@near-wallet-selector/meteor-wallet": "^7.0.3",
+    "@near-wallet-selector/modal-ui": "^7.0.3",
+    "@near-wallet-selector/my-near-wallet": "^7.0.3",
+    "@near-wallet-selector/near-wallet": "^7.0.3",
+    "@near-wallet-selector/nightly": "^7.0.3",
+    "@near-wallet-selector/nightly-connect": "^7.0.3",
+    "@near-wallet-selector/sender": "^7.0.3",
+    "@near-wallet-selector/wallet-connect": "^7.0.3",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
@@ -10,10 +22,19 @@
     "@types/node": "^16.11.59",
     "@types/react": "^18.0.21",
     "@types/react-dom": "^18.0.6",
+    "bn.js": "^5.2.1",
+    "buffer": "^6.0.3",
+    "crypto-browserify": "^3.12.0",
+    "js-sha256": "^0.9.0",
+    "near-api-js": "^0.44.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-router-dom": "^6.4.1",
     "react-scripts": "5.0.1",
+    "stream-browserify": "^3.0.0",
+    "styled-components": "^5.3.5",
     "typescript": "^4.8.3",
+    "uuid4": "^2.0.3",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
@@ -39,5 +60,10 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@types/bn.js": "^5.1.1",
+    "@types/styled-components": "^5.1.26",
+    "@types/uuid4": "^2.0.0"
   }
 }
