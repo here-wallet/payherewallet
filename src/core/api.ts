@@ -1,6 +1,7 @@
 export interface SmsRequest {
   amount: string;
-  token?: string;
+  tokenContract?: string;
+  nft?: string;
   send_to_phone: string;
   transaction_hash: string;
   near_account_id: string;

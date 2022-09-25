@@ -235,6 +235,8 @@ class Account {
 
     const request = {
       amount: query.get("amount") ?? "",
+      tokenContract: query.get("tokenContract") ?? "",
+      nft: query.get("nft") ?? "",
       transaction_hash: query.get("transactionHashes") ?? "",
       near_account_id: query.get("near_account_id") ?? "",
       send_to_phone: query.get("send_to_phone") ?? "",

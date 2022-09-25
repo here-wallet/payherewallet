@@ -44,12 +44,17 @@ const SendSuccess = ({ account }: { account: Account | null }) => {
     <S.Section>
       <img src={imageUrl} alt="success" />
       <S.Card>
-        <Amount>
-          {data?.amount}
-          <span>
-            {tokens.find((t) => t.label === data?.token)?.label ?? "NER"}
-          </span>
-        </Amount>
+        {data?.nft ? (
+          <Title>NFT Sent</Title>
+        ) : (
+          <Amount>
+            {data?.amount}
+            <span>
+              {tokens.find((t) => t.id == data?.tokenContract)?.label ?? "NEAR"}
+            </span>
+          </Amount>
+        )}
+
         <p>
           You have successfully transfered <br />
           money to <b>{data?.send_to_phone}</b>.
