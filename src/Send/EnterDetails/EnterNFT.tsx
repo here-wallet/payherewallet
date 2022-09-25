@@ -44,7 +44,7 @@ const EnterNFT = ({ account }: { account: Account | null }) => {
       firstCall.current = false;
       return;
     }
-    changeSearch({ phone, nft, receiver });
+    changeSearch({ phone, nft, comment: receiver });
   }, [phone, nft, receiver]);
 
   const formatNft = (nft: NFTModel) =>

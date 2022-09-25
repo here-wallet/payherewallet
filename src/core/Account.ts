@@ -232,9 +232,6 @@ class Account {
 
   async completeSendMoney() {
     const query = new URLSearchParams(window.location.search);
-    if (query.get("errorMessage")) {
-      throw Error(query.get("errorMessage") ?? "completeSendMoney error");
-    }
 
     const request = {
       amount: query.get("amount") ?? "",

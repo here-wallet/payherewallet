@@ -45,7 +45,7 @@ const EnterCrypto = ({ account }: { account: Account | null }) => {
       return;
     }
 
-    changeSearch({ phone, amount, token, receiver });
+    changeSearch({ phone, amount, token, comment: receiver });
   }, [phone, amount, token, receiver]);
 
   useEffect(() => {
@@ -64,7 +64,10 @@ const EnterCrypto = ({ account }: { account: Account | null }) => {
 
     promise
       .then((path) => navigate(path))
-      .catch(() => showError("sendMoney error"));
+      .catch((e) => {
+        console.log(e);
+        showError("sendMoney error");
+      });
   };
 
   const toNFT = () => {
