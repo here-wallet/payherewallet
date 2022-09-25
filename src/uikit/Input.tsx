@@ -39,7 +39,7 @@ export const SPostfix = styled.div`
   position: absolute;
   top: 50%;
   right: 16px;
-  margin-top: -10px;
+  margin-top: -11px;
 
   font-family: "Manrope";
   font-style: normal;

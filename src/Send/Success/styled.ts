@@ -16,6 +16,8 @@ export const Section = styled.div`
 
   img {
     width: 200px;
+    height: 200px;
+    object-fit: contain;
   }
 
   @media (max-width: 720px) {
@@ -35,6 +37,7 @@ export const Section = styled.div`
 
     img {
       width: 100px;
+      height: 100px;
     }
   }
 `;

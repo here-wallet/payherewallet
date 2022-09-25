@@ -22,7 +22,7 @@ console.log(initSearch);
 
 const tokens = [
   { id: null, label: "NEAR" },
-  { id: "usn.near", label: "USN" },
+  { id: "usn", label: "USN" },
   { id: "usdt.near", label: "USDT" },
 ];
 
@@ -119,7 +119,6 @@ const EnterCrypto = ({ account }: { account: Account | null }) => {
         onChange={(e: any) => setAmount(formatAmount(e.target.value))}
         placeholder={`Amount (${contractToken ? token : "NEAR"})`}
         postfix={postfix}
-        type="tel"
       />
 
       <S.SInput

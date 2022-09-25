@@ -138,9 +138,9 @@ class Account {
             args: {
               msg: hash,
               receiver_id: process.env.REACT_APP_CONTRACT,
-              amount: utils.format.parseNearAmount(amount) ?? "1",
+              amount: (+amount * 1000000000000000000).toString(), // 18 zeros
             },
-            gas: BOATLOAD_OF_GAS,
+            gas: "300" + "0".repeat(12),
             deposit: "1",
           },
         },
@@ -232,6 +232,10 @@ class Account {
 
   async completeSendMoney() {
     const query = new URLSearchParams(window.location.search);
+    if (query.get("errorMessage")) {
+      throw Error(query.get("errorMessage") ?? "completeSendMoney error");
+    }
+
     const request = {
       amount: query.get("amount") ?? "",
       transaction_hash: query.get("transactionHashes") ?? "",
