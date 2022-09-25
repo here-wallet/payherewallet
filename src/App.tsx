@@ -98,8 +98,9 @@ export const Container = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
-  min-height: 100vh;
   width: 100vw;
+
+  min-height: calc(var(--vh, 1vh) * 100);
 `;
 
 export default App;

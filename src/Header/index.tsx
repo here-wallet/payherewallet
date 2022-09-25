@@ -44,9 +44,9 @@ export const SHeader = styled.header`
     }
 
     ${PinkButton} {
-      height: 32px;
+      height: 42px;
       border-radius: 12px;
-      font-size: 0.8em;
+      font-size: 1em;
     }
   }
 `;

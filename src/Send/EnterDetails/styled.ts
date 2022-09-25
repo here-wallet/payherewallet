@@ -14,7 +14,7 @@ export const Section = styled.div`
   }
 
   ${Button} {
-    margin-top: 32px;
+    margin-top: 16px;
   }
 
   @media (max-width: 720px) {
@@ -116,5 +116,54 @@ export const NftCard = styled.div<{ isSelected: boolean }>`
       padding: 12px;
       margin: 0;
     }
+  }
+`;
+
+export const Badge = styled.div`
+  border-radius: 16px;
+  text-align: center;
+  background: #ebdedc;
+  height: 56px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-family: "Manrope";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 22px;
+  color: #2c3034;
+  margin: 0;
+`;
+
+export const Picker = styled.div`
+  background: #ebdedc;
+  padding: 12px;
+  border-radius: 12px;
+  z-index: 10000;
+  position: absolute;
+  right: -8px;
+  text-align: center;
+  color: #000;
+
+  width: 84px;
+  border: 1px solid #2c3034;
+  top: 26px;
+`;
+
+export const Option = styled.div`
+  padding: 4px 0;
+  cursor: pointer;
+`;
+
+export const Token = styled.div`
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+
+  svg {
+    margin-left: 4px;
   }
 `;

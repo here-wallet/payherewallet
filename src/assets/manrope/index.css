@@ -36,7 +36,7 @@
     url('./fonts/Manrope-Variable.woff') format('woff'),
     url('./fonts/Manrope-Variable.ttf') format('truetype');
   font-weight: 200 800;
-  font-display: swap;
+  font-display: block;
   font-style: normal;
 }
 
@@ -47,7 +47,7 @@
     url('./fonts/Manrope-ExtraLight.woff') format('woff'),
     url('./fonts/Manrope-ExtraLight.ttf') format('truetype');
   font-weight: 200;
-  font-display: swap;
+  font-display: block;
   font-style: normal;
 }
 
@@ -58,7 +58,7 @@
     url('./fonts/Manrope-Light.woff') format('woff'),
     url('./fonts/Manrope-Light.ttf') format('truetype');
   font-weight: 300;
-  font-display: swap;
+  font-display: block;
   font-style: normal;
 }
 
@@ -69,7 +69,7 @@
     url('./fonts/Manrope-Regular.woff') format('woff'),
     url('./fonts/Manrope-Regular.ttf') format('truetype');
   font-weight: 400;
-  font-display: swap;
+  font-display: block;
   font-style: normal;
 }
 
@@ -80,7 +80,7 @@
     url('./fonts/Manrope-Medium.woff') format('woff'),
     url('./fonts/Manrope-Medium.ttf') format('truetype');
   font-weight: 500;
-  font-display: swap;
+  font-display: block;
   font-style: normal;
 }
 
@@ -91,7 +91,7 @@
     url('./fonts/Manrope-SemiBold.woff') format('woff'),
     url('./fonts/Manrope-SemiBold.ttf') format('truetype');
   font-weight: 600;
-  font-display: swap;
+  font-display: block;
   font-style: normal;
 }
 
@@ -102,7 +102,7 @@
     url('./fonts/Manrope-Bold.woff') format('woff'),
     url('./fonts/Manrope-Bold.ttf') format('truetype');
   font-weight: 700;
-  font-display: swap;
+  font-display: block;
   font-style: normal;
 }
 
@@ -113,6 +113,6 @@
     url('./fonts/Manrope-ExtraBold.woff') format('woff'),
     url('./fonts/Manrope-ExtraBold.ttf') format('truetype');
   font-weight: 800;
-  font-display: swap;
+  font-display: block;
   font-style: normal;
 }

@@ -65,9 +65,9 @@ const EnterNFT = ({ account }: { account: Account | null }) => {
     setLoading(true);
     account?.api
       .loadNFTs(account.accountId)
-      .then(setNfts)
+      .then((v) => setTimeout(() => setNfts(v), 500))
       .catch(() => showError("Load NFTs error"))
-      .finally(() => setLoading(false));
+      .finally(() => setTimeout(() => setLoading(false), 500));
   }, [account]);
 
   if (app?.account == null) {
@@ -81,6 +81,9 @@ const EnterNFT = ({ account }: { account: Account | null }) => {
         <S.Tab onClick={() => navigate("/send/crypto")}>Crypto</S.Tab>
         <S.Tab isSelected>NFT</S.Tab>
       </S.Tabs>
+
+      {isLoading && <S.Badge>Loading...</S.Badge>}
+      {!isLoading && !nfts.length && <S.Badge>You dont have NFT</S.Badge>}
 
       {nfts.length > 0 && (
         <S.Gallery>

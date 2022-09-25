@@ -33,7 +33,7 @@ export const Title = styled.h1`
 export const Buttons = styled.div`
   display: flex;
   gap: 16px;
-  margin: 56px auto;
+  margin: 56px auto 0;
 
   button {
     font-size: 1.2em;

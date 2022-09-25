@@ -11,12 +11,11 @@ export const Section = styled.div`
 
   ${SInput} {
     margin-top: 16px;
-    margin-bottom: 32px;
+    margin-bottom: 16px;
   }
 
   ${Button} {
     border-radius: 24px;
-    margin-top: 8px;
     height: 62px;
   }
 

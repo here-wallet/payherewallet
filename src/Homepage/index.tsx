@@ -7,7 +7,7 @@ const Homepage = () => {
   return (
     <S.Section>
       <S.Title>
-        Exchange crypto with <nobr>friends via</nobr> phone number
+        Exchange crypto <nobr>with friends via</nobr> phone number
       </S.Title>
       <S.Buttons>
         <Link to="/send">

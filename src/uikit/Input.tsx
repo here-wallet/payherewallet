@@ -50,7 +50,7 @@ export const SPostfix = styled.div`
 `;
 
 interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
-  postfix?: string;
+  postfix?: React.ReactNode;
 }
 
 export const Input = ({ postfix, className, ...props }: Props) => {

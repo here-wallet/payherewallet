@@ -110,13 +110,57 @@ class Account {
     return ["/send/success", new URLSearchParams(query)].join("?");
   }
 
+  async sentFingToken(
+    phone: string,
+    amount: string,
+    tokenContract: string,
+    receiver: string
+  ) {
+    const hash = await this.getPhoneHash(phone);
+    const query = {
+      amount,
+      tokenContract,
+      transactionHashes: "",
+      near_account_id: this.accountId,
+      send_to_phone: phone,
+      comment: receiver,
+    };
+
+    const route = `${window.location.origin}/send/success`;
+    const result = await this.wallet.signAndSendTransaction({
+      callbackUrl: [route, new URLSearchParams(query)].join("?"),
+      receiverId: tokenContract,
+      actions: [
+        {
+          type: "FunctionCall",
+          params: {
+            methodName: "ft_transfer_call",
+            args: {
+              msg: hash,
+              receiver_id: process.env.REACT_APP_CONTRACT,
+              amount: utils.format.parseNearAmount(amount) ?? "1",
+            },
+            gas: BOATLOAD_OF_GAS,
+            deposit: "1",
+          },
+        },
+      ],
+    });
+
+    if (result == null) {
+      throw Error("Transaction hash is not defined");
+    }
+
+    query.transactionHashes = result.transaction_outcome.id;
+    return ["/send/success", new URLSearchParams(query)].join("?");
+  }
+
   async sendMoney(phone: string, amount: string, receiver: string) {
-    const account = (await this.wallet.getAccounts())[0].accountId;
     const hash = await this.getPhoneHash(phone);
     const query = {
       amount,
       transactionHashes: "",
-      near_account_id: account,
+      near_account_id: this.accountId,
       send_to_phone: phone,
       comment: receiver,
     };

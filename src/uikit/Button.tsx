@@ -30,6 +30,11 @@ export const Button = styled.button`
     background: #cbc6c5;
     cursor: default;
   }
+
+  @media (max-width: 720px) {
+    height: 64px;
+    border-radius: 24px;
+  }
 `;
 
 export const LinkButton = styled.button`
