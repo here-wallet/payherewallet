@@ -19,8 +19,6 @@ import * as S from "./styled";
 
 const responsive = {
   0: { items: 1 },
-  589: { items: 1 },
-  1024: { items: 3 },
 };
 
 const initSearch = getSearch();
@@ -98,7 +96,9 @@ const EnterNFT = ({ account }: { account: Account | null }) => {
             infinite
             items={nfts.map((item) => (
               <S.NftCard
-                style={{ width: nfts.length === 1 ? "100%" : "" }}
+                style={{
+                  width: nfts.length === 1 ? "100%" : "",
+                }}
                 key={item.metadata.media}
                 data-value={item.metadata.media}
                 isSelected={formatNft(item) === nft}
@@ -107,10 +107,7 @@ const EnterNFT = ({ account }: { account: Account | null }) => {
                 }
               >
                 <div>
-                  <img
-                    src={`${item.contact.base_uri}/${item.metadata.media}`}
-                    alt={item.contact.name}
-                  />
+                  <img src={`${item.url}`} alt={item.contact.name} />
                   <p>
                     {item.contact.name.slice(0, 60)} #{item.metadata.token_id}
                   </p>

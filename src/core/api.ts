@@ -1,12 +1,6 @@
-interface AuthRequest {
-  near_account_id: string;
-  public_key: string;
-  account_sign: string;
-  device_id: string;
-}
-
 export interface SmsRequest {
   amount: string;
+  token?: string;
   send_to_phone: string;
   transaction_hash: string;
   near_account_id: string;
@@ -14,6 +8,7 @@ export interface SmsRequest {
 }
 
 export interface NFTModel {
+  url: string;
   contact: {
     base_uri: string;
     contract_id: string;

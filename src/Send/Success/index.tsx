@@ -9,6 +9,12 @@ import { LinkButton } from "../../uikit/Button";
 import { Amount } from "../../uikit/Title";
 import * as S from "./styled";
 
+const tokens = [
+  { id: null, label: "NEAR" },
+  { id: "usn", label: "USN" },
+  { id: "usdt.near", label: "USDT" },
+];
+
 const SendSuccess = ({ account }: { account: Account | null }) => {
   const [data, setData] = useState<SmsRequest | null>(null);
   const [isLoading, setLoading] = useState<boolean>(true);
@@ -40,7 +46,9 @@ const SendSuccess = ({ account }: { account: Account | null }) => {
       <S.Card>
         <Amount>
           {data?.amount}
-          <span>NEAR</span>
+          <span>
+            {tokens.find((t) => t.label === data?.token)?.label ?? "NER"}
+          </span>
         </Amount>
         <p>
           You have successfully transfered <br />

@@ -58,17 +58,11 @@ export const Scroller = styled.div`
 `;
 
 export const Gallery = styled.div`
-  width: 589px;
-  margin-left: calc(-589px / 4);
-
-  @media (max-width: 720px) {
-    width: calc(100% + 32px);
-    margin-left: -16px;
-  }
+  width: 100%;
 `;
 
 export const NftCard = styled.div<{ isSelected: boolean }>`
-  width: 192px;
+  width: 100%;
   padding: 16px 0;
 
   @media (max-width: 720px) {
@@ -78,6 +72,7 @@ export const NftCard = styled.div<{ isSelected: boolean }>`
 
   div {
     width: 183px;
+    height: 250px;
     box-sizing: border-box;
     overflow: hidden;
     user-select: none;
