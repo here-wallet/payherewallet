@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Account from "../../core/Account";
+import { useUsdNear } from "../../core/useCurrency";
 import { useWallet } from "../../core/useWallet";
 import {
   changeSearch,
@@ -11,7 +12,6 @@ import {
   validatePhone,
 } from "../../core/utils";
 import { Button } from "../../uikit/Button";
-import { Input } from "../../uikit/Input";
 import { Title } from "../../uikit/Title";
 import * as S from "./styled";
 
@@ -20,12 +20,13 @@ console.log(initSearch);
 
 const EnterCrypto = ({ account }: { account: Account | null }) => {
   const app = useWallet();
+  const near2usd = useUsdNear();
   const navigate = useNavigate();
   const firstCall = useRef(true);
 
   const [amount, setAmount] = useState(initSearch.amount || "");
   const [phone, setPhone] = useState(initSearch.phone || "");
-  const [receiver, setReceiver] = useState(initSearch.receiver || "");
+  const [receiver, setReceiver] = useState(initSearch.comment || "");
   const isInvalid = isNaN(+amount) || !validatePhone(phone) || !receiver;
 
   useEffect(() => {
@@ -60,25 +61,28 @@ const EnterCrypto = ({ account }: { account: Account | null }) => {
         <S.Tab onClick={toNFT}>NFT</S.Tab>
       </S.Tabs>
 
-      <Input
+      <S.SInput
         value={amount}
         onChange={(e: any) => setAmount(formatAmount(e.target.value))}
-        placeholder="Amount"
+        placeholder="Amount (NEAR)"
+        postfix={"$" + (+amount * near2usd).toFixed(2)}
         type="tel"
       />
-      <Input
+
+      <S.SInput
         value={receiver}
         onChange={(e) => setReceiver(e.target.value)}
-        placeholder="Receiver name"
+        placeholder="Comment (Peter for apples)"
       />
-      <Input
+
+      <S.SInput
         value={phone}
         onChange={(e) => setPhone(formatPhone(e.target.value))}
         placeholder="Receiver phone (+1)"
         type="tel"
       />
       <Button onClick={handleTransfer} disabled={isInvalid}>
-        {app?.account ? "Review" : "Connect wallet"}
+        {app?.account ? "Send" : "Connect wallet"}
       </Button>
     </S.Section>
   );

@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-export const Input = styled.input`
+export const SInput = styled.input`
   width: 100%;
   background: #ebdedc;
   box-sizing: border-box;
@@ -30,3 +30,34 @@ export const Input = styled.input`
     transform: translate(0, 0);
   } */
 `;
+
+export const SLabel = styled.div`
+  position: relative;
+`;
+
+export const SPostfix = styled.div`
+  position: absolute;
+  top: 50%;
+  right: 16px;
+  margin-top: -10px;
+
+  font-family: "Manrope";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 22px;
+  color: #6b6661;
+`;
+
+interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
+  postfix?: string;
+}
+
+export const Input = ({ postfix, className, ...props }: Props) => {
+  return (
+    <SLabel className={className}>
+      <SInput {...(props as any)} />
+      {postfix && <SPostfix>{postfix}</SPostfix>}
+    </SLabel>
+  );
+};

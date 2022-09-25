@@ -1,59 +1,135 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate, Navigate } from "react-router-dom";
+import AliceCarousel from "react-alice-carousel";
+import "react-alice-carousel/lib/alice-carousel.css";
+
 import Account from "../../core/Account";
+import { NFTModel } from "../../core/api";
 import { useWallet } from "../../core/useWallet";
-import { formatPhone, validatePhone } from "../../core/utils";
+import {
+  changeSearch,
+  formatPhone,
+  getSearch,
+  showError,
+  validatePhone,
+} from "../../core/utils";
 import { Button } from "../../uikit/Button";
-import { Input } from "../../uikit/Input";
 import { Title } from "../../uikit/Title";
 import * as S from "./styled";
+
+const responsive = {
+  0: { items: 1 },
+  589: { items: 1 },
+  1024: { items: 3 },
+};
+
+const initSearch = getSearch();
+console.log(initSearch);
 
 const EnterNFT = ({ account }: { account: Account | null }) => {
   const app = useWallet();
   const navigate = useNavigate();
+  const firstCall = useRef(true);
 
-  const [phone, setPhone] = useState("");
-  const [receiver, setReceiver] = useState("");
-  const isInvalid = !validatePhone(phone) || !receiver;
+  const [nfts, setNfts] = useState<NFTModel[]>([]);
+  const [isLoading, setLoading] = useState(false);
+
+  const [nft, setNft] = useState(initSearch.nft ?? "");
+  const [phone, setPhone] = useState(initSearch.phone ?? "");
+  const [receiver, setReceiver] = useState(initSearch.comment ?? "");
+  const isInvalid = !validatePhone(phone) || !receiver || !nft;
+
+  useEffect(() => {
+    if (firstCall.current) {
+      firstCall.current = false;
+      return;
+    }
+    changeSearch({ phone, nft, receiver });
+  }, [phone, nft, receiver]);
+
+  const formatNft = (nft: NFTModel) =>
+    `${nft.contact.contract_id}#${nft.metadata.token_id}`;
 
   const handleTransfer = async () => {
-    if (account == null) return;
+    if (account == null) return app?.selectorModal.show();
+    account
+      .sendNFT(phone, nft, receiver)
+      .then((path) => navigate(path))
+      .catch((e) => {
+        console.log(e);
+        showError("sendNFT error");
+      });
   };
+
+  useEffect(() => {
+    setLoading(true);
+    account?.api
+      .loadNFTs(account.accountId)
+      .then(setNfts)
+      .catch(() => showError("Load NFTs error"))
+      .finally(() => setLoading(false));
+  }, [account]);
 
   if (app?.account == null) {
     return <Navigate to="/send" />;
   }
-
-  const toNFT = () => {
-    if (app?.account) {
-      navigate("/send/nft");
-      return;
-    }
-    app?.selectorModal.show();
-  };
 
   return (
     <S.Section>
       <Title>Enter details</Title>
       <S.Tabs>
         <S.Tab onClick={() => navigate("/send/crypto")}>Crypto</S.Tab>
-        <S.Tab isSelected onClick={toNFT}>
-          NFT
-        </S.Tab>
+        <S.Tab isSelected>NFT</S.Tab>
       </S.Tabs>
 
-      <Input
+      {nfts.length > 0 && (
+        <S.Gallery>
+          <AliceCarousel
+            animationType="fadeout"
+            animationDuration={800}
+            disableButtonsControls
+            disableDotsControls
+            mouseTracking
+            responsive={responsive}
+            controlsStrategy="alternate"
+            infinite
+            items={nfts.map((item) => (
+              <S.NftCard
+                style={{ width: nfts.length === 1 ? "100%" : "" }}
+                key={item.metadata.media}
+                data-value={item.metadata.media}
+                isSelected={formatNft(item) === nft}
+                onClick={() =>
+                  setNft(formatNft(item) === nft ? "" : formatNft(item))
+                }
+              >
+                <div>
+                  <img
+                    src={`${item.contact.base_uri}/${item.metadata.media}`}
+                    alt={item.contact.name}
+                  />
+                  <p>
+                    {item.contact.name.slice(0, 60)} #{item.metadata.token_id}
+                  </p>
+                </div>
+              </S.NftCard>
+            ))}
+          />
+        </S.Gallery>
+      )}
+
+      <S.SInput
         value={receiver}
         onChange={(e) => setReceiver(e.target.value)}
-        placeholder="Receiver name"
+        placeholder="Comment (Peter for apples)"
       />
-      <Input
+      <S.SInput
         value={phone}
         onChange={(e) => setPhone(formatPhone(e.target.value))}
         placeholder="Receiver phone (+1)"
       />
       <Button onClick={handleTransfer} disabled={isInvalid}>
-        Review
+        {app?.account ? "Send" : "Connect wallet"}
       </Button>
     </S.Section>
   );

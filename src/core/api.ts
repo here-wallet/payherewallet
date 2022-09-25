@@ -10,8 +10,19 @@ export interface SmsRequest {
   send_to_phone: string;
   transaction_hash: string;
   near_account_id: string;
-  contact_name_to: string;
-  contact_name_from: string;
+  comment: string;
+}
+
+export interface NFTModel {
+  contact: {
+    base_uri: string;
+    contract_id: string;
+    name: string;
+  };
+  metadata: {
+    media: string;
+    token_id: string;
+  };
 }
 
 class Api {
@@ -53,6 +64,14 @@ class Api {
     });
 
     return data.phone_number_id;
+  }
+
+  async loadNFTs(account: string): Promise<NFTModel[]> {
+    const data = await this.fetch("user/nfts?near_account_id=" + account, {
+      method: "GET",
+    });
+
+    return data.nfts;
   }
 
   async allocateNearAccount(code: string, phoneId: number, account: string) {

@@ -30,6 +30,7 @@
     "mobx-react-lite": "^3.4.0",
     "near-api-js": "^0.44.2",
     "react": "^18.2.0",
+    "react-alice-carousel": "^2.6.4",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.4.1",
     "react-scripts": "5.0.1",

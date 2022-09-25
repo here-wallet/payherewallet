@@ -1,10 +1,8 @@
-import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { Routes, Route, Navigate } from "react-router-dom";
 import { ReactComponent as Appstore } from "./assets/appstore.svg";
 
 import { useWallet } from "./core/useWallet";
-import Account from "./core/Account";
 import { Header } from "./Header";
 import Homepage from "./Homepage";
 import SendSuccess from "./Send/Success";
@@ -14,7 +12,6 @@ import EnterCrypto from "./Send/EnterDetails/EnterCrypto";
 import EnterNFT from "./Send/EnterDetails/EnterNFT";
 import Connect from "./Receive/Connect";
 import InstallHere from "./Receive/InstallHere";
-import ApproveReceive from "./Receive/ApproveReceive";
 
 const App = () => {
   const app = useWallet();
@@ -36,10 +33,6 @@ const App = () => {
         <Route
           path="/receive/success"
           element={<ReceiveSuccess account={account} />}
-        />
-        <Route
-          path="/receive/approve"
-          element={<ApproveReceive account={account} />}
         />
         <Route
           path="/receive/verify"

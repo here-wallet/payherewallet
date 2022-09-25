@@ -1,7 +1,7 @@
 import { Wallet } from "@near-wallet-selector/core";
 import BN from "bn.js";
 import { makeObservable } from "mobx";
-import { KeyPair, utils } from "near-api-js";
+import { utils } from "near-api-js";
 import { JsonRpcProvider } from "near-api-js/lib/providers";
 import uuid4 from "uuid4";
 import Api from "./api";
@@ -69,16 +69,56 @@ class Account {
     return hash;
   }
 
+  async sendNFT(phone: string, nft: string, receiver: string) {
+    const account = (await this.wallet.getAccounts())[0].accountId;
+    const hash = await this.getPhoneHash(phone);
+    const query = {
+      nft,
+      transactionHashes: "",
+      near_account_id: account,
+      send_to_phone: phone,
+      comment: receiver,
+    };
+
+    const [nftContract, nftId] = nft.split("#");
+    const route = `${window.location.origin}/send/success`;
+    const result = await this.wallet.signAndSendTransaction({
+      callbackUrl: [route, new URLSearchParams(query)].join("?"),
+      receiverId: nftContract,
+      actions: [
+        {
+          type: "FunctionCall",
+          params: {
+            methodName: "nft_transfer_call",
+            args: {
+              msg: hash,
+              receiver_id: process.env.REACT_APP_CONTRACT,
+              token_id: nftId,
+            },
+            gas: "300" + "0".repeat(12),
+            deposit: "1",
+          },
+        },
+      ],
+    });
+
+    if (result == null) {
+      throw Error("Transaction hash is not defined");
+    }
+
+    query.transactionHashes = result.transaction_outcome.id;
+    return ["/send/success", new URLSearchParams(query)].join("?");
+  }
+
   async sendMoney(phone: string, amount: string, receiver: string) {
     const account = (await this.wallet.getAccounts())[0].accountId;
     const hash = await this.getPhoneHash(phone);
     const query = {
       amount,
       transactionHashes: "",
-      contact_name_from: account,
-      contact_name_to: receiver,
       near_account_id: account,
       send_to_phone: phone,
+      comment: receiver,
     };
 
     const route = `${window.location.origin}/send/success`;
@@ -104,31 +144,6 @@ class Account {
 
     query.transactionHashes = result.transaction_outcome.id;
     return ["/send/success", new URLSearchParams(query)].join("?");
-  }
-
-  async receiveMoney(phone: string) {
-    const hash = await this.getPhoneHash(phone);
-    const result = await this.wallet.signAndSendTransaction({
-      callbackUrl: `${window.location.origin}/receive/success`,
-      receiverId: process.env.REACT_APP_CONTRACT,
-      actions: [
-        {
-          type: "FunctionCall",
-          params: {
-            methodName: "receive_payments",
-            args: { phone: hash },
-            gas: BOATLOAD_OF_GAS,
-            deposit: "0",
-          },
-        },
-      ],
-    });
-
-    if (result == null) {
-      throw Error("Transaction hash is not defined");
-    }
-
-    return "/receive/success";
   }
 
   async loadReceived(phone: string) {
@@ -168,7 +183,7 @@ class Account {
     });
 
     const data = JSON.parse(Buffer.from(res.result).toString());
-    return this.accountId === data;
+    return data;
   }
 
   async completeSendMoney() {
@@ -176,10 +191,9 @@ class Account {
     const request = {
       amount: query.get("amount") ?? "",
       transaction_hash: query.get("transactionHashes") ?? "",
-      contact_name_from: query.get("contact_name_from") ?? "",
-      contact_name_to: query.get("contact_name_to") ?? "",
       near_account_id: query.get("near_account_id") ?? "",
       send_to_phone: query.get("send_to_phone") ?? "",
+      comment: query.get("comment") ?? "",
     };
 
     await this.api.sendSms(request);

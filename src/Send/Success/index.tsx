@@ -11,6 +11,7 @@ const SendSuccess = ({ account }: { account: Account | null }) => {
   const [data, setData] = useState<SmsRequest | null>(null);
 
   useEffect(() => {
+    console.log("df");
     account
       ?.completeSendMoney()
       .then(setData)

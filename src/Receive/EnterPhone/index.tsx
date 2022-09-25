@@ -1,9 +1,8 @@
 import { useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 import Account from "../../core/Account";
-import { showError } from "../../core/utils";
-import { Button, LinkButton, StrokeButton } from "../../uikit/Button";
-import { Input } from "../../uikit/Input";
+import { formatPhone, showError, validatePhone } from "../../core/utils";
+import { Button, LinkButton } from "../../uikit/Button";
 import { Title } from "../../uikit/Title";
 import * as S from "./styled";
 
@@ -22,16 +21,20 @@ const EnterPhone = ({ account }: { account: Account | null }) => {
     if (account == null) return;
 
     setLoading(true);
-    const isAuth = await account.checkRegistration(phone);
-    if (isAuth) {
+    const phoneAccaunt = await account.checkRegistration(phone);
+    if (phoneAccaunt === account.accountId) {
       account.setupPhone(phone);
-      return navigate("/receive/approve");
+      return navigate("/receive/success");
     }
 
-    await account?.api
-      .sendPhone(phone, account.accountId)
-      .then(setPhoneId)
-      .catch(() => showError("sendPhone error"));
+    if (phoneAccaunt == null) {
+      await account?.api
+        .sendPhone(phone, account.accountId)
+        .then(setPhoneId)
+        .catch(() => showError("sendPhone error"));
+    } else {
+      showError("Phone already linked");
+    }
 
     setLoading(false);
   };
@@ -44,7 +47,7 @@ const EnterPhone = ({ account }: { account: Account | null }) => {
       .allocateNearAccount(code, phoneId, account.accountId)
       .then(() => {
         account.setupPhone(phone);
-        navigate("/receive/approve");
+        navigate("/receive/success");
       })
       .catch(() => showError("SMS code incorrect"));
 
@@ -58,12 +61,14 @@ const EnterPhone = ({ account }: { account: Account | null }) => {
         <S.Phone>
           Enter the code sent to <b>{phone}</b>
         </S.Phone>
-        <Input
+
+        <S.SInput
           value={code}
           onChange={(e) => setCode(e.target.value)}
           placeholder="SMS code"
           disabled={isLoading}
         />
+
         <Button onClick={handleVerify} disabled={isLoading}>
           {isLoading ? "Loading..." : "Verify"}
         </Button>
@@ -80,12 +85,15 @@ const EnterPhone = ({ account }: { account: Account | null }) => {
   return (
     <S.Section>
       <Title>Enter phone</Title>
-      <Input
+      <S.SInput
         value={phone}
-        onChange={(e) => setPhone(e.target.value)}
+        onChange={(e) => setPhone(formatPhone(e.target.value))}
         placeholder="Phone number"
       />
-      <Button onClick={handlePhone} disabled={isLoading}>
+      <Button
+        onClick={handlePhone}
+        disabled={isLoading || !validatePhone(phone)}
+      >
         {isLoading ? "Loading..." : "Continue"}
       </Button>
     </S.Section>
