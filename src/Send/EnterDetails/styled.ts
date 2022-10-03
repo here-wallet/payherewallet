@@ -1,15 +1,18 @@
 import styled from "styled-components";
 import { Button } from "../../uikit/Button";
 import { Input } from "../../uikit/Input";
+import { PhoneInput } from "../../uikit/PhoneInput";
 
 export const SInput = styled(Input)``;
+
+export const SPhoneInput = styled(PhoneInput)``;
 
 export const Section = styled.div`
   width: 343px;
   margin: auto;
   padding: 16px;
 
-  ${SInput} {
+  ${SInput}, ${SPhoneInput} {
     margin-top: 16px;
   }
 
@@ -59,9 +62,38 @@ export const Scroller = styled.div`
 
 export const Gallery = styled.div`
   width: 100%;
+  position: relative;
+
+  @media (max-width: 720px) {
+    margin-left: -16px;
+    width: calc(100% + 32px);
+  }
+
+  &::before {
+    content: "";
+    display: block;
+    width: 60px;
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, #f2ebe9, transparent);
+    z-index: 50;
+  }
+
+  &::after {
+    content: "";
+    display: block;
+    width: 60px;
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background: linear-gradient(-90deg, #f2ebe9, transparent);
+  }
 `;
 
-export const NftCard = styled.div<{ isSelected: boolean }>`
+export const NftCard = styled.div`
   width: 100%;
   padding: 16px 0;
 
@@ -87,10 +119,7 @@ export const NftCard = styled.div<{ isSelected: boolean }>`
     background: #ebdedc;
     transition: 0.2s box-shadow;
     border: 1px solid #2c3034;
-    box-shadow: ${(p) =>
-      p.isSelected
-        ? "8px 8px 0px #2c3034, 0 0 0 4px #2c3034"
-        : "8px 8px 0px #2c3034"};
+    box-shadow: 8px 8px 0px #2c3034;
     border-radius: 16px;
 
     img {
@@ -133,24 +162,71 @@ export const Badge = styled.div`
   margin: 0;
 `;
 
-export const Picker = styled.div`
-  background: #ebdedc;
-  padding: 12px;
-  border-radius: 12px;
-  z-index: 10000;
+export const PickerMenu = styled.div`
   position: absolute;
   right: -8px;
-  text-align: center;
-  color: #000;
-
-  width: 84px;
-  border: 1px solid #2c3034;
+  z-index: 10000;
   top: 26px;
 `;
 
-export const Option = styled.div`
+export const PickerWrapper = styled.div`
+  position: relative;
+  border: 1px solid #2c3034;
+  border-radius: 12px;
+  overflow: hidden;
+
+  &::after {
+    content: "";
+    display: block;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 60px;
+    background: linear-gradient(0, #ebdedc, transparent);
+    pointer-events: none;
+  }
+`;
+
+export const PickerList = styled.div`
+  background: #ebdedc;
   padding: 4px 0;
+  border-radius: 12px;
+
+  text-align: center;
+  color: #000;
+
+  height: 200px;
+  overflow-y: auto;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+`;
+
+export const Option = styled.div`
+  padding: 4px 12px;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: 0.2s background-color;
+  gap: 8px;
+
+  img {
+    object-fit: contain;
+    border-radius: 50%;
+  }
+
+  &:hover {
+    background-color: #f4ebea;
+  }
+
+  &:last-child {
+    margin-bottom: 18px;
+  }
 `;
 
 export const Token = styled.div`
@@ -160,5 +236,59 @@ export const Token = styled.div`
 
   svg {
     margin-left: 4px;
+  }
+`;
+
+export const CurrencyLabel = styled.div`
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: -14px;
+  font-size: 16px;
+  color: #646464;
+  padding: 0 13px;
+
+  font-family: "Manrope";
+  font-style: normal;
+  font-weight: 500;
+  color: #6b6661;
+
+  span {
+    width: 50%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  span:last-child {
+    width: 70%;
+    text-align: right;
+  }
+`;
+
+export const LeftButton = styled.button`
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: 0.2s transform;
+
+  position: absolute;
+  left: 0;
+  top: 50%;
+  margin-top: -8px;
+  transform: rotate(90deg);
+  z-index: 1000;
+
+  &:hover {
+    transform: rotate(90deg) scale(1.2);
+  }
+`;
+
+export const RightButton = styled(LeftButton)`
+  right: 0;
+  left: initial;
+  transform: rotate(-90deg);
+
+  &:hover {
+    transform: rotate(-90deg) scale(1.2);
   }
 `;

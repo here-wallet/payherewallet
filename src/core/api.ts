@@ -1,6 +1,6 @@
 export interface SmsRequest {
   amount: string;
-  tokenContract?: string;
+  token?: string;
   nft?: string;
   send_to_phone: string;
   transaction_hash: string;
@@ -19,6 +19,28 @@ export interface NFTModel {
     media: string;
     token_id: string;
   };
+}
+
+export interface FTModel {
+  name: string;
+  symbol: string;
+  icon: string;
+  contract_id: string;
+  currency: number;
+  token_id: number;
+  description: string;
+  decimal: number;
+  amount: number;
+  usd_rate: number;
+  usd_rate_yesterday: number;
+}
+
+export enum SmsStatus {
+  undelivered = "undelivered",
+  delivered = "delivered",
+  sent = "sent",
+  queued = "queued",
+  pending = "pending",
 }
 
 class Api {
@@ -40,13 +62,6 @@ class Api {
     throw Error(data);
   }
 
-  async sendSms(request: SmsRequest) {
-    await this.fetch("phone/send_near", {
-      method: "POST",
-      body: JSON.stringify(request),
-    });
-  }
-
   async getPhoneHash(phone: string) {
     return this.fetch(`phone/calc_phone_hash?phone=${phone}`, {
       method: "GET",
@@ -62,12 +77,27 @@ class Api {
     return data.phone_number_id;
   }
 
+  async loadTokens(account: string): Promise<FTModel[]> {
+    const data = await this.fetch("user/fts?near_account_id=" + account, {
+      method: "GET",
+    });
+
+    return data.fts;
+  }
+
   async loadNFTs(account: string): Promise<NFTModel[]> {
     const data = await this.fetch("user/nfts?near_account_id=" + account, {
       method: "GET",
     });
 
     return data.nfts;
+  }
+
+  async checkSms(trx: string): Promise<{ status: SmsStatus }> {
+    return await this.fetch(
+      "phone/get_sms_by_transaction?transaction_hash=" + trx,
+      { method: "GET" }
+    );
   }
 
   async allocateNearAccount(code: string, phoneId: number, account: string) {

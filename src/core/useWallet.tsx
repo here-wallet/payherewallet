@@ -61,10 +61,12 @@ export function AppContextProvider({ children }: Props) {
       selector.store.observable.subscribe(async () => {
         const wallet = await selector.wallet().catch(() => null);
         if (wallet == null) {
+          context?.account?.dispose();
           setContext({ account: null, selector, selectorModal });
           return;
         }
 
+        context?.account?.dispose();
         const accounts = await wallet.getAccounts();
         const name = accounts[0].accountId;
         const account = new Account(name, wallet, provider);

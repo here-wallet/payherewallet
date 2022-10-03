@@ -1,43 +1,40 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { observer } from "mobx-react-lite";
+import { toJS } from "mobx";
 
-import { ReactComponent as ArrowDown } from "./arrow.svg";
-import Account from "../../core/Account";
-import { useUsdNear } from "../../core/useCurrency";
+import n from "near-api-js";
+
 import { useWallet } from "../../core/useWallet";
+import Account from "../../core/Account";
+import { Button, LinkButton } from "../../uikit/Button";
+import { Title } from "../../uikit/Title";
+import { Spinner } from "../../uikit/Spinner";
+import { FTModel } from "../../core/api";
 import {
   changeSearch,
   formatAmount,
-  formatPhone,
   getSearch,
   showError,
-  validatePhone,
 } from "../../core/utils";
-import { Button } from "../../uikit/Button";
-import { Title } from "../../uikit/Title";
+
+import { ReactComponent as ArrowDown } from "./arrow.svg";
 import * as S from "./styled";
 
 const initSearch = getSearch();
-console.log(initSearch);
-
-const tokens = [
-  { id: null, label: "NEAR" },
-  { id: "usn", label: "USN" },
-  { id: "usdt.near", label: "USDT" },
-];
 
 const EnterCrypto = ({ account }: { account: Account | null }) => {
   const app = useWallet();
-  const near2usd = useUsdNear();
   const navigate = useNavigate();
   const firstCall = useRef(true);
   const [isOpen, setOpen] = useState(false);
 
+  const [isPhoneValid, setPhoneValid] = useState(false);
   const [amount, setAmount] = useState(initSearch.amount || "");
-  const [token, setToken] = useState("USN");
+  const [token, setToken] = useState(initSearch.token || "NEAR");
   const [phone, setPhone] = useState(initSearch.phone || "");
   const [receiver, setReceiver] = useState(initSearch.comment || "");
-  const isInvalid = isNaN(+amount) || !validatePhone(phone) || !receiver;
+  const isInvalid = isNaN(+amount) || isPhoneValid || !receiver;
 
   useEffect(() => {
     if (firstCall.current) {
@@ -57,9 +54,12 @@ const EnterCrypto = ({ account }: { account: Account | null }) => {
   const handleTransfer = async () => {
     if (account == null) return app?.selectorModal.show();
 
-    const contract = tokens.find((t) => t.label === token)?.id;
-    const promise = contract
-      ? account.sentFingToken(phone, amount, contract, receiver)
+    const ftModel = tokens.find(
+      (t) => t.symbol === token && t.symbol !== "NEAR"
+    );
+
+    const promise = ftModel
+      ? account.sentFingToken(phone, amount, ftModel, receiver)
       : account.sendMoney(phone, amount, receiver);
 
     promise
@@ -70,39 +70,56 @@ const EnterCrypto = ({ account }: { account: Account | null }) => {
       });
   };
 
-  const toNFT = () => {
-    if (app?.account) return navigate("/send/nft");
-    app?.selectorModal.show();
+  const handlePhoneValid = (value: string, data: any) => {
+    setTimeout(() => {
+      setPhoneValid(value.length !== data.format.split(".").length - 1);
+    }, 0);
+    return true;
   };
 
-  const contractToken = tokens.find((t) => t.label === token)?.id;
-  let course =
-    "$" + contractToken
-      ? (+amount).toFixed(2)
-      : (+amount * near2usd).toFixed(2);
-
-  const handleToken = (t: any) => {
-    setToken(t.label);
+  const handleToken = (t: FTModel) => {
+    setToken(t.symbol);
     setOpen(false);
   };
 
+  const tokens =
+    toJS(account?.tokens)?.sort(
+      (a, b) => b.amount * b.usd_rate - a.amount * a.usd_rate
+    ) ?? [];
+
+  const selectedToken = account?.tokens.find((t) => t.symbol === token) ?? {
+    usd_rate: 1,
+    amount: 0,
+  };
+
+  const { usd_rate } = selectedToken;
+  const tokenBalance = (selectedToken.amount * usd_rate).toFixed(2);
+  const amount2usd = ((isNaN(+amount) ? 0 : +amount) * usd_rate).toFixed(2);
+
   const postfix = (
     <div onClick={(e) => e.stopPropagation()}>
-      <S.Token onClick={() => setOpen((v) => !v)}>
-        {contractToken ? token : "NEAR"}
+      <S.Token
+        style={{ fontWeight: "bolder" }}
+        onClick={() => setOpen((v) => !v)}
+      >
+        {token}
         <ArrowDown />
       </S.Token>
 
       {isOpen && (
-        <S.Picker>
-          {tokens
-            .filter((t) => t.label !== token)
-            .map((t) => (
-              <S.Option key={t.id} onClick={() => handleToken(t)}>
-                {t.label}
-              </S.Option>
-            ))}
-        </S.Picker>
+        <S.PickerMenu>
+          <S.PickerWrapper>
+            <S.PickerList>
+              {tokens.length === 0 && <Spinner />}
+              {tokens.map((t) => (
+                <S.Option key={t.token_id} onClick={() => handleToken(t)}>
+                  {t.symbol}
+                  <img width="24" src={t.icon} alt="icon" />
+                </S.Option>
+              ))}
+            </S.PickerList>
+          </S.PickerWrapper>
+        </S.PickerMenu>
       )}
     </div>
   );
@@ -111,18 +128,34 @@ const EnterCrypto = ({ account }: { account: Account | null }) => {
     <S.Section>
       <Title>Enter details</Title>
       <S.Tabs>
-        <S.Tab onClick={() => navigate("/send/crypto")} isSelected>
-          Crypto
-        </S.Tab>
-        <S.Tab onClick={toNFT}>NFT</S.Tab>
+        <S.Tab isSelected>Crypto</S.Tab>
+        <S.Tab onClick={() => navigate("/send/nft")}>NFT</S.Tab>
       </S.Tabs>
 
-      <S.SInput
-        value={amount}
-        onChange={(e: any) => setAmount(formatAmount(e.target.value))}
-        placeholder={`Amount (${contractToken ? token : "NEAR"})`}
-        postfix={postfix}
-      />
+      {!account && (
+        <S.Badge>
+          You must
+          <LinkButton onClick={() => app?.selectorModal.show()}>
+            connect a wallet
+          </LinkButton>
+        </S.Badge>
+      )}
+
+      {account && (
+        <>
+          <S.CurrencyLabel>
+            <span>${amount2usd}</span>
+            <span>Balance: ${tokenBalance}</span>
+          </S.CurrencyLabel>
+
+          <S.SInput
+            value={amount}
+            onChange={(e: any) => setAmount(formatAmount(e.target.value))}
+            placeholder={`Amount (${token})`}
+            postfix={postfix}
+          />
+        </>
+      )}
 
       <S.SInput
         value={receiver}
@@ -130,17 +163,19 @@ const EnterCrypto = ({ account }: { account: Account | null }) => {
         placeholder="Comment (Peter for apples)"
       />
 
-      <S.SInput
+      <S.SPhoneInput
         value={phone}
-        onChange={(e) => setPhone(formatPhone(e.target.value))}
+        onChange={(v) => setPhone(v)}
+        isValid={handlePhoneValid}
         placeholder="Receiver phone (+1)"
-        type="tel"
+        country="us"
       />
+
       <Button onClick={handleTransfer} disabled={isInvalid}>
-        {app?.account ? "Send" : "Connect wallet"}
+        Continue
       </Button>
     </S.Section>
   );
 };
 
-export default EnterCrypto;
+export default observer(EnterCrypto);

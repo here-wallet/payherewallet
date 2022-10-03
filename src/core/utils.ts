@@ -45,3 +45,7 @@ export const showError = (msg: string) => {
     },
   }).showToast();
 };
+
+
+export const delay = (ms: number) =>
+  new Promise((resolve) => setTimeout(resolve, ms));

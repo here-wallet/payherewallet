@@ -1,21 +1,65 @@
-import { useState } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 import Account from "../../core/Account";
-import { formatPhone, showError, validatePhone } from "../../core/utils";
+import { showError } from "../../core/utils";
 import { Button, LinkButton } from "../../uikit/Button";
 import { Title } from "../../uikit/Title";
 import * as S from "./styled";
 
+const initQuery = new URLSearchParams(window.location.search);
+
 const EnterPhone = ({ account }: { account: Account | null }) => {
   const navigate = useNavigate();
-  const [phoneId, setPhoneId] = useState<number | null>(null);
-  const [phone, setPhone] = useState(account?.phone ?? "");
-  const [code, setCode] = useState("");
-  const [isLoading, setLoading] = useState(false);
 
-  if (account == null) {
-    return <Navigate to="/receive" />;
-  }
+  const [isAutobind, setAutobind] = useState(false);
+  const [isPhoneValid, setPhoneValid] = useState(false);
+  const [phoneId, setPhoneId] = useState<number | null>(null);
+  const [phone, setPhone] = useState(
+    account?.phone || initQuery.get("phone") || ""
+  );
+
+  const [isLoading, setLoading] = useState(false);
+  const [code, setCode] = useState("");
+
+  const handlePhoneValid = (value: string, data: any) => {
+    setTimeout(() => {
+      setPhoneValid(value.length === data.format.split(".").length - 1);
+    }, 0);
+    return true;
+  };
+
+  useEffect(() => {
+    if (account == null) return;
+    const query = new URLSearchParams(window.location.search);
+    const phone = query.get("phone");
+    const code = query.get("code");
+    if (!phone || !code) return;
+
+    const run = async () => {
+      setAutobind(true);
+      const phoneAccaunt = await account.checkRegistration(phone);
+      if (phoneAccaunt === account.accountId) {
+        account.setupPhone(phone);
+        navigate("/receive/success");
+        setAutobind(false);
+        return;
+      }
+
+      if (phoneAccaunt) {
+        showError("Phone already linked");
+        setAutobind(false);
+        return;
+      }
+
+      const phoneId = await account?.api.sendPhone(phone, account.accountId);
+      await account.api.allocateNearAccount(code, phoneId, account.accountId);
+      navigate("/receive/success");
+      setAutobind(false);
+    };
+
+    run().catch(() => setAutobind(false));
+  }, [account, navigate]);
 
   const handlePhone = async () => {
     if (account == null) return;
@@ -54,6 +98,10 @@ const EnterPhone = ({ account }: { account: Account | null }) => {
     setLoading(false);
   };
 
+  if (isAutobind) {
+    return <Title>Loading...</Title>;
+  }
+
   if (phoneId) {
     return (
       <S.Section>
@@ -85,15 +133,16 @@ const EnterPhone = ({ account }: { account: Account | null }) => {
   return (
     <S.Section>
       <Title>Enter phone</Title>
-      <S.SInput
+
+      <S.SPhoneInput
         value={phone}
-        onChange={(e) => setPhone(formatPhone(e.target.value))}
-        placeholder="Phone number"
+        onChange={(v) => setPhone(v)}
+        isValid={handlePhoneValid}
+        placeholder="Receiver phone (+1)"
+        country="us"
       />
-      <Button
-        onClick={handlePhone}
-        disabled={isLoading || !validatePhone(phone)}
-      >
+
+      <Button onClick={handlePhone} disabled={isLoading || !isPhoneValid}>
         {isLoading ? "Loading..." : "Continue"}
       </Button>
     </S.Section>

@@ -1,44 +1,82 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import imageUrl from "../../assets/rock.png";
 import Account from "../../core/Account";
-import { SmsRequest } from "../../core/api";
-import { showError } from "../../core/utils";
+import { SmsRequest, SmsStatus } from "../../core/api";
+import { delay, showError } from "../../core/utils";
 import { Title } from "../../Homepage/styled";
 import { LinkButton } from "../../uikit/Button";
 import { Amount } from "../../uikit/Title";
 import * as S from "./styled";
 
-const tokens = [
-  { id: null, label: "NEAR" },
-  { id: "usn", label: "USN" },
-  { id: "usdt.near", label: "USDT" },
-];
+const getComment = (request: SmsRequest, symbol: string) => {
+  const link = `https://phone.herewallet.app/receive?phone=${request.send_to_phone}`;
+  if (request.nft) {
+    return `Hello! I sent you NFT. You can get it here: ${link}`;
+  }
+
+  return `Hello! I sent you ${request.amount} ${symbol}. You can get it here: ${link}`;
+};
 
 const SendSuccess = ({ account }: { account: Account | null }) => {
-  const [data, setData] = useState<SmsRequest | null>(null);
-  const [isLoading, setLoading] = useState<boolean>(true);
   const navigate = useNavigate();
+  const [isLoading, setLoading] = useState(true);
+  const [isError, setError] = useState(false);
+
+  const [data] = useState<SmsRequest>(() => {
+    const query = new URLSearchParams(window.location.search);
+    return {
+      nft: query.get("nft") ?? "",
+      token: query.get("token") ?? "",
+      amount: query.get("amount") ?? "",
+      transaction_hash: query.get("transactionHashes") ?? "",
+      near_account_id: query.get("near_account_id") ?? "",
+      send_to_phone: query.get("send_to_phone") ?? "",
+      comment: query.get("comment") ?? "",
+    };
+  });
+
+  const token = account?.tokens.find((t) => t.symbol === data?.token);
 
   useEffect(() => {
-    setLoading(true);
-    account
-      ?.completeSendMoney()
-      .then(setData)
-      .catch((e) => {
-        showError("completeSendMoney error");
-        navigate("/send");
-      })
-      .finally(() => setLoading(false));
-  }, [account, navigate, setData]);
+    if (account == null) return;
+    let isDisposed = false;
 
-  if (isLoading) {
-    return (
-      <>
-        <Title>Loading...</Title>
-      </>
-    );
-  }
+    const handler = async () => {
+      await delay(5000);
+      if (isDisposed) return;
+
+      const { status } = await account?.api
+        .checkSms(data.transaction_hash)
+        .catch(() => ({ status: "loading" }));
+
+      if (status === SmsStatus.undelivered) {
+        setLoading(false);
+        setError(true);
+        return;
+      }
+
+      if (status === SmsStatus.delivered) {
+        setLoading(false);
+        return;
+      }
+
+      handler();
+    };
+
+    handler();
+    return () => {
+      isDisposed = true;
+    };
+  }, [account, data]);
+
+  const handleCopy = async () => {
+    navigator.clipboard
+      .writeText(getComment(data, token?.symbol ?? "NEAR"))
+      .then(() => {
+        showError("The message has been copied");
+      });
+  };
 
   return (
     <S.Section>
@@ -49,17 +87,29 @@ const SendSuccess = ({ account }: { account: Account | null }) => {
         ) : (
           <Amount>
             {data?.amount}
-            <span>
-              {tokens.find((t) => t.id == data?.tokenContract)?.label ?? "NEAR"}
-            </span>
+            <span>{token?.symbol ?? "NEAR"}</span>
           </Amount>
         )}
 
-        <p>
+        <p style={{ marginTop: 2 }}>
           You have successfully transfered <br />
-          money to <b>{data?.send_to_phone}</b>.
+          money to <b>+{data?.send_to_phone}</b>.
           <br />
-          User will receive an SMS with all the details
+          {isError ? (
+            <div style={{ marginTop: 8 }}>
+              This phone number is not supported. Please send your friend a
+              message by yourself{" "}
+              <LinkButton onClick={handleCopy}>Copy message</LinkButton>
+            </div>
+          ) : isLoading ? (
+            <div style={{ marginTop: 8 }}>
+              <b> Waiting for the usage message to be sent...</b>
+            </div>
+          ) : (
+            <div style={{ marginTop: 8 }}>
+              <b>Ready! The message has been sent!</b>
+            </div>
+          )}
         </p>
 
         <div style={{ display: "flex", gap: 16 }}>
