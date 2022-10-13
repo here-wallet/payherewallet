@@ -16,7 +16,7 @@ import * as S from "./styled";
 const initSearch = getSearch();
 
 const getNFTImage = (nft: NFTModel) => {
-  if (nft.contact.contract_id === "x.paras.near") {
+  if (nft.contract.contract_id === "x.paras.near") {
     return `https://paras-cdn.imgix.net//${nft.url}?w=600&auto=format,compress`;
   }
   return nft.url;
@@ -45,7 +45,7 @@ const EnterNFT = ({ account }: { account: Account | null }) => {
   }, [phone, nft, receiver]);
 
   const formatNft = (nft: NFTModel) =>
-    `${nft.contact.contract_id}#${nft.metadata.token_id}`;
+    `${nft.contract.contract_id}#${nft.metadata.token_id}`;
   const selectedItem = nfts.findIndex((t) => formatNft(t) === nft);
 
   const handleTransfer = async () => {
@@ -146,9 +146,9 @@ const EnterNFT = ({ account }: { account: Account | null }) => {
                 data-value={item.metadata.media}
               >
                 <div>
-                  <img src={getNFTImage(item)} alt={item.contact.name} />
+                  <img src={getNFTImage(item)} alt={item.contract.name} />
                   <p>
-                    {item.contact.name.slice(0, 60)} #{item.metadata.token_id}
+                    {item.contract.name.slice(0, 60)} #{item.metadata.token_id}
                   </p>
                 </div>
               </S.NftCard>

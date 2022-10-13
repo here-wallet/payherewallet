@@ -59,7 +59,7 @@ const App = () => {
       </Routes>
 
       <Footer>
-        <a href="https://testflight.apple.com/join/osMqBAZ9">
+        <a href="https://appstore.herewallet.app/phone">
           <Appstore />
         </a>
         <p>

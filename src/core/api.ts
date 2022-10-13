@@ -10,7 +10,7 @@ export interface SmsRequest {
 
 export interface NFTModel {
   url: string;
-  contact: {
+  contract: {
     base_uri: string;
     contract_id: string;
     name: string;
