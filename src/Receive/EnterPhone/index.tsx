@@ -8,11 +8,18 @@ import { Title } from "../../uikit/Title";
 import * as S from "./styled";
 
 const initQuery = new URLSearchParams(window.location.search);
+const isAutobindQuery = () => {
+  const query = new URLSearchParams(window.location.search);
+  const phoneId = query.get("phone_id");
+  const phone = query.get("phone");
+  const code = query.get("code");
+  return !(!phone || !code || !phoneId || isNaN(+phoneId));
+};
 
 const EnterPhone = ({ account }: { account: Account | null }) => {
   const navigate = useNavigate();
 
-  const [isAutobind, setAutobind] = useState(false);
+  const [isAutobind, setAutobind] = useState(() => isAutobindQuery());
   const [isPhoneValid, setPhoneValid] = useState(false);
   const [phoneId, setPhoneId] = useState<number | null>(null);
   const [phone, setPhone] = useState(
@@ -32,12 +39,14 @@ const EnterPhone = ({ account }: { account: Account | null }) => {
   useEffect(() => {
     if (account == null) return;
     const query = new URLSearchParams(window.location.search);
+    const phoneId = query.get("phone_id");
     const phone = query.get("phone");
     const code = query.get("code");
-    if (!phone || !code) return;
+    if (!phone || !code || !phoneId || isNaN(+phoneId)) return;
 
     const run = async () => {
       setAutobind(true);
+
       const phoneAccaunt = await account.checkRegistration(phone);
       if (phoneAccaunt === account.accountId) {
         account.setupPhone(phone);
@@ -52,8 +61,8 @@ const EnterPhone = ({ account }: { account: Account | null }) => {
         return;
       }
 
-      const phoneId = await account?.api.sendPhone(phone, account.accountId);
-      await account.api.allocateNearAccount(code, phoneId, account.accountId);
+      await account.api.allocateNearAccount(code, +phoneId, account.accountId);
+      account.setupPhone(phone);
       navigate("/receive/success");
       setAutobind(false);
     };
@@ -66,6 +75,7 @@ const EnterPhone = ({ account }: { account: Account | null }) => {
 
     setLoading(true);
     const phoneAccaunt = await account.checkRegistration(phone);
+    console.log(phoneAccaunt);
     if (phoneAccaunt === account.accountId) {
       account.setupPhone(phone);
       return navigate("/receive/success");

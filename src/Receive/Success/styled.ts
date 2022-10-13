@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import { Title } from "../../uikit/Title";
 
 export const Section = styled.div`
   margin: auto;

@@ -61,7 +61,7 @@ const EnterNFT = ({ account }: { account: Account | null }) => {
 
   const handlePhoneValid = (value: string, data: any) => {
     setTimeout(() => {
-      setPhoneValid(value.length !== data.format.split(".").length - 1);
+      setPhoneValid(value.length === data.format.split(".").length - 1);
     }, 0);
     return true;
   };
@@ -84,7 +84,12 @@ const EnterNFT = ({ account }: { account: Account | null }) => {
     setLoading(true);
     account?.api
       .loadNFTs(account.accountId)
-      .then((v) => setTimeout(() => setNfts(v), 500))
+      .then((nfts) =>
+        setTimeout(() => {
+          setNfts(nfts);
+          setNft((v) => v || (nfts.length ? formatNft(nfts[0]) : ""));
+        }, 500)
+      )
       .catch(() => showError("Load NFTs error"))
       .finally(() => setTimeout(() => setLoading(false), 500));
   }, [account]);

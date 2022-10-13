@@ -179,6 +179,9 @@ export const PickerWrapper = styled.div`
     content: "";
     display: block;
     position: absolute;
+    border-radius: 12px;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
     bottom: 0;
     left: 0;
     right: 0;

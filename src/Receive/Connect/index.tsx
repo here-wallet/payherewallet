@@ -25,7 +25,9 @@ const Connect = ({ account, onLogin }: Props) => {
       <Title>
         Select a way to receive <br />
       </Title>
-      <S.Button onClick={() => navigate("/receive/here")}>
+      <S.Button
+        onClick={() => navigate(`/receive/here${window.location.search}`)}
+      >
         <HereIcon />
         Create new HERE Wallet account
       </S.Button>

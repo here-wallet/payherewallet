@@ -3,8 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { observer } from "mobx-react-lite";
 import { toJS } from "mobx";
 
-import n from "near-api-js";
-
 import { useWallet } from "../../core/useWallet";
 import Account from "../../core/Account";
 import { Button, LinkButton } from "../../uikit/Button";

@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from "react";
-import { WalletSelector, Wallet, NetworkId } from "@near-wallet-selector/core";
+import { WalletSelector, NetworkId } from "@near-wallet-selector/core";
 import { setupWalletSelector } from "@near-wallet-selector/core";
 import {
   setupModal,
@@ -12,7 +12,6 @@ import { setupMathWallet } from "@near-wallet-selector/math-wallet";
 import { setupNightly } from "@near-wallet-selector/nightly";
 import { setupMeteorWallet } from "@near-wallet-selector/meteor-wallet";
 import { setupLedger } from "@near-wallet-selector/ledger";
-import { setupDefaultWallets } from "@near-wallet-selector/default-wallets";
 import { JsonRpcProvider } from "near-api-js/lib/providers";
 import { setupHereWallet } from "./here-wallet";
 
@@ -40,14 +39,13 @@ export function AppContextProvider({ children }: Props) {
         network: process.env.REACT_APP_NETWORK! as NetworkId,
         modules: [
           setupHereWallet(),
-          ...(await setupDefaultWallets()),
           setupNearWallet(),
-          setupMyNearWallet(),
           setupSender(),
-          setupMathWallet(),
-          setupNightly(),
-          setupMeteorWallet(),
           setupLedger(),
+          setupMyNearWallet(),
+          setupMeteorWallet(),
+          setupNightly(),
+          setupMathWallet(),
         ],
       });
 

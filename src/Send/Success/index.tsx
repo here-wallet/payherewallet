@@ -1,6 +1,7 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import imageUrl from "../../assets/rock.png";
+
 import Account from "../../core/Account";
 import { SmsRequest, SmsStatus } from "../../core/api";
 import { delay, showError } from "../../core/utils";

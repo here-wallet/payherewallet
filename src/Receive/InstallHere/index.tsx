@@ -8,7 +8,7 @@ const InstallHere = () => {
   const app = useWallet();
 
   if (app?.account) {
-    return <Navigate to="/receive/verify" />;
+    return <Navigate to={`/receive/verify${window.location.search}`} />;
   }
 
   return (
