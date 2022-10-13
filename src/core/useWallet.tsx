@@ -17,16 +17,24 @@ import { setupHereWallet } from "./here-wallet";
 
 import "@near-wallet-selector/modal-ui/styles.css";
 import Account from "./Account";
+import { delay } from "./utils";
 
 type AppServices = {
   selector: WalletSelector;
   selectorModal: WalletSelectorModal;
   account: Account | null;
+  isLoading: boolean;
 };
 
 type Props = {
   children: React.ReactNode;
 };
+
+let loginTx: string | null = null;
+const query = new URLSearchParams(window.location.search);
+const hash = query.get("transactionHashes");
+const isKeys = query.get("all_keys");
+if (isKeys) loginTx = hash;
 
 const AppContext = React.createContext<AppServices | null>(null);
 
@@ -60,23 +68,39 @@ export function AppContextProvider({ children }: Props) {
         const wallet = await selector.wallet().catch(() => null);
         if (wallet == null) {
           context?.account?.dispose();
-          setContext({ account: null, selector, selectorModal });
+          setContext({
+            account: null,
+            selector,
+            selectorModal,
+            isLoading: false,
+          });
           return;
         }
 
         context?.account?.dispose();
+
+        setContext({
+          account: null,
+          selector,
+          selectorModal,
+          isLoading: true,
+        });
+
         const accounts = await wallet.getAccounts();
         const name = accounts[0].accountId;
         const account = new Account(name, wallet, provider);
+        if (loginTx) await delay(8000);
 
+        await account.auth().catch(() => null);
         setContext({
           account,
           selector,
           selectorModal,
+          isLoading: false,
         });
       });
 
-      setContext({ selector, selectorModal, account: null });
+      setContext({ selector, selectorModal, account: null, isLoading: false });
     };
 
     init();

@@ -1,13 +1,14 @@
 import { Wallet } from "@near-wallet-selector/core";
 import { makeObservable, observable, runInAction } from "mobx";
 import { JsonRpcProvider } from "near-api-js/lib/providers";
-import { utils } from "near-api-js";
+import { KeyPair, utils } from "near-api-js";
 import CryptoJS from "crypto-js";
 import uuid4 from "uuid4";
 import BN from "bn.js";
 
 import { delay, showError } from "./utils";
 import Api, { FTModel } from "./api";
+import { base_encode } from "near-api-js/lib/utils/serialize";
 
 const BOATLOAD_OF_GAS = utils.format.parseNearAmount("0.00000000003")!;
 
@@ -36,6 +37,40 @@ class Account {
 
   dispose() {
     this._isDispose = true;
+  }
+
+  async hasDropoutNFTs() {
+    const count = await this.api.getDropoutNFTs();
+    return count > 0;
+  }
+
+  async auth() {
+    const authKey = window.localStorage.getItem(this.accountId + ":token");
+    if (authKey) {
+      this.api.accessToken = authKey;
+      return;
+    }
+
+    const deviceID = this.getDeviceID();
+    const privateKey = window.localStorage.getItem(
+      `near-api-js:keystore:${this.accountId}:mainnet`
+    );
+
+    if (privateKey == null) return;
+
+    const keyPair = KeyPair.fromString(privateKey);
+    const buffer = Buffer.from(this.accountId + deviceID, "utf-8");
+    const uint8arr = new Uint8Array(buffer);
+    const accountSign = base_encode(keyPair.sign(uint8arr).signature);
+
+    const token = await this.api.auth({
+      device_id: deviceID,
+      near_account_id: this.accountId,
+      public_key: keyPair.getPublicKey().toString(),
+      account_sign: accountSign,
+    });
+
+    window.localStorage.setItem(this.accountId + ":token", token);
   }
 
   async updateTokens() {
@@ -283,6 +318,7 @@ class Account {
 
   async logout() {
     await this.wallet.signOut();
+    window.localStorage.setItem(this.accountId + ":token", "");
   }
 }
 

@@ -8,6 +8,13 @@ export interface SmsRequest {
   comment: string;
 }
 
+interface AuthRequest {
+  near_account_id: string;
+  public_key: string;
+  account_sign: string;
+  device_id: string;
+}
+
 export interface NFTModel {
   url: string;
   contact: {
@@ -45,11 +52,13 @@ export enum SmsStatus {
 
 class Api {
   private endpoint = "https://api.herewallet.app";
+  public accessToken = "";
 
   async fetch(route: string, request: RequestInit) {
     const res = await fetch(`${this.endpoint}/api/v1/${route}`, {
       ...request,
       headers: {
+        Authorization: this.accessToken,
         ...request.headers,
       },
     });
@@ -62,10 +71,29 @@ class Api {
     throw Error(data);
   }
 
+  async auth(request: AuthRequest) {
+    const data = await this.fetch("user/auth", {
+      method: "POST",
+      body: JSON.stringify(request),
+    });
+    this.accessToken = data.token;
+    return data.token;
+  }
+
   async getPhoneHash(phone: string) {
     return this.fetch(`phone/calc_phone_hash?phone=${phone}`, {
       method: "GET",
     });
+  }
+
+  async getDropoutNFTs() {
+    const data = await this.fetch("user/dropout_nft", { method: "GET" });
+    return data.nft_for_dropout;
+  }
+
+  async allocateDropoutNFT() {
+    const data = await this.fetch("user/dropout_nft", { method: "POST" });
+    return data;
   }
 
   async sendPhone(phone: string, account: string) {

@@ -5,7 +5,7 @@ import { BrowserRouter } from "react-router-dom";
 import ReactDOM from "react-dom/client";
 import reportWebVitals from "./reportWebVitals";
 import { AppContextProvider } from "./core/useWallet";
-import App from "./App";
+import NFTApp from "./NFTApp";
 
 import "./assets/cabinet-grotesk/index.css";
 import "./assets/manrope/index.css";
@@ -49,7 +49,7 @@ const root = ReactDOM.createRoot(
 root.render(
   <BrowserRouter>
     <AppContextProvider>
-      <App />
+      <NFTApp />
     </AppContextProvider>
   </BrowserRouter>
 );

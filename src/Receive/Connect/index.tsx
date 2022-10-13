@@ -2,9 +2,9 @@ import { Navigate, useNavigate } from "react-router-dom";
 import Account from "../../core/Account";
 import { useWallet } from "../../core/useWallet";
 import { Title } from "../../uikit/Title";
+
 import { ReactComponent as HereIcon } from "./here.svg";
 import { ReactComponent as NearIcon } from "./near.svg";
-
 import * as S from "./styled";
 
 interface Props {
