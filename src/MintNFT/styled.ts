@@ -152,7 +152,7 @@ export const Card = styled.div<{ isLoading: boolean }>`
   ${(p) =>
     p.isLoading &&
     css`
-      animation: ${blinkAnim} 0.8s forwards;
+      animation: ${blinkAnim} 0.8s infinite;
     `}
 
   display: flex;

@@ -26,7 +26,7 @@ const NFTApp = () => {
       </Routes>
 
       <Footer>
-        <a href="https://testflight.apple.com/join/osMqBAZ9">
+        <a href="https://appstore.herewallet.app/nft">
           <Appstore />
         </a>
         <p>
