@@ -100,9 +100,7 @@ const MintNFT = ({ handleLogin }: any) => {
           <p>
             Leave your contact information so the HERE team can contact you to
             give you the winnings{" "}
-            <a href="https://fnb7rf8hm6m.typeform.com/to/ufgC3XBM">
-              Click form
-            </a>
+            <a href="https://forms.gle/ZRLcjZwAwWpi2GPr5">Click form</a>
           </p>
         </S.CardContainer>
 
@@ -122,22 +120,23 @@ const MintNFT = ({ handleLogin }: any) => {
             <p>Gas as cashback for every transaction</p>
           </S.FeatureItem>
           <S.FeatureItem style={{ "--delay": "1s" } as any}>
+            <h2>Community</h2>
+            <p>
+              <a href="https://t.me/+iLczZ5230X5hZDky">Click here</a> to open
+              chat
+            </p>
+          </S.FeatureItem>
+          <S.FeatureItem style={{ "--delay": "1.5s" } as any}>
             <h2>Airdrops</h2>
             <p>
               HERE Tokens will be distributed to NFT owners after the launch
             </p>
           </S.FeatureItem>
-          <S.FeatureItem style={{ "--delay": "1.5s" } as any}>
+          <S.FeatureItem style={{ "--delay": "2s" } as any}>
             <h2>Mutations</h2>
             <p>
               The more money you stake, the bigger the chance that your NFT
               mutates into a very rare alien monkey
-            </p>
-          </S.FeatureItem>
-          <S.FeatureItem style={{ "--delay": "2s" } as any}>
-            <h2>Community</h2>
-            <p>
-              <a href="https://t.me/herewalletchat">Click here</a> to open chat
             </p>
           </S.FeatureItem>
         </S.Features>
