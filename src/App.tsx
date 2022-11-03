@@ -1,25 +1,31 @@
 import styled from "styled-components";
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { ReactComponent as Appstore } from "./assets/appstore.svg";
 
 import { useWallet } from "./core/useWallet";
 import { Header } from "./Header";
 import Homepage from "./Homepage";
 import SendSuccess from "./Send/Success";
-import EnterPhone from "./Receive/EnterPhone";
+import EnterPhone, { isAutobindQuery } from "./Receive/EnterPhone";
 import ReceiveSuccess from "./Receive/Success";
 import EnterCrypto from "./Send/EnterDetails/EnterCrypto";
 import EnterNFT from "./Send/EnterDetails/EnterNFT";
-import Connect from "./Receive/Connect";
+import Connect, { isIOS } from "./Receive/Connect";
 import InstallHere from "./Receive/InstallHere";
+import LinkDrop from "./Receive/LinkDrop";
 
 const App = () => {
   const app = useWallet();
+  const location = useLocation();
   const account = app?.account ?? null;
 
   const handleLogin = async () => {
     app?.selectorModal.show();
   };
+
+  const isHideFooter =
+    location.pathname === "/l" ||
+    (isIOS() && isAutobindQuery() && location.pathname === "/receive");
 
   return (
     <Container>
@@ -43,6 +49,7 @@ const App = () => {
           path="/receive"
           element={<Connect account={account} onLogin={handleLogin} />}
         />
+        <Route path="/l" element={<LinkDrop />} />
         <Route
           path="/send/success"
           element={<SendSuccess account={account} />}
@@ -59,15 +66,19 @@ const App = () => {
       </Routes>
 
       <Footer>
-        <a href="https://appstore.herewallet.app/phone">
-          <Appstore />
-        </a>
-        <p>
-          Don’t have an account yet?{" "}
-          <nobr>
-            Visit <a href="https://herewallet.app">herewallet.app</a>
-          </nobr>
-        </p>
+        {!isHideFooter && (
+          <>
+            <a href="https://appstore.herewallet.app/phone">
+              <Appstore />
+            </a>
+            <p>
+              Don’t have an account yet?{" "}
+              <nobr>
+                Visit <a href="https://herewallet.app">herewallet.app</a>
+              </nobr>
+            </p>
+          </>
+        )}
       </Footer>
     </Container>
   );

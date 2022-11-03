@@ -1,0 +1,18 @@
+{
+    "applinks": {
+        "details": [
+            {
+            "appIDs": ["4ZZ7T7CRTL.app.here.wallet"],
+            "components": [
+               {
+                  "/": "/*",
+                  "comment": "Matches any URL whose path starts with /"
+               }
+             ]
+           }
+       ]
+    },
+    "webcredentials": {
+       "apps": ["4ZZ7T7CRTL.app.here.wallet"]
+    }
+}

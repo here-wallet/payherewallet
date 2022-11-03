@@ -8,7 +8,7 @@ import { Title } from "../../uikit/Title";
 import * as S from "./styled";
 
 const initQuery = new URLSearchParams(window.location.search);
-const isAutobindQuery = () => {
+export const isAutobindQuery = () => {
   const query = new URLSearchParams(window.location.search);
   const phoneId = query.get("phone_id");
   const phone = query.get("phone");
