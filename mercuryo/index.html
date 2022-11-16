@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HERE Wallet x Mercuryo</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+                'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+                sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            background: #fff;
+        }
+
+        #mercuryo-widget {
+            width: 100%;
+            height: calc(var(--vh, 1vh) * 100);
+        }
+    </style>
+</head>
+
+<body>
+    <div id="mercuryo-widget"></div>
+    <script src="https://widget.mercuryo.io/embed.2.0.js"></script>
+    <script>
+        let query = Object.fromEntries(new URLSearchParams(window.location.search).entries())
+        mercuryoWidget.run({
+            widgetId: 'd9e4a6b4-acde-400d-97e9-97d865199d60',
+            host: document.getElementById('mercuryo-widget'),
+            address: query.address,
+            signature: query.signature,
+            currency: "NEAR"
+        });
+
+        var customViewportCorrectionVariable = "vh";
+        function setViewportProperty(doc) {
+            var prevClientHeight;
+            var customVar = "--" + (customViewportCorrectionVariable || "vh");
+            function handleResize() {
+                var clientHeight = doc.clientHeight;
+                if (clientHeight === prevClientHeight) return;
+                requestAnimationFrame(function updateViewportHeight() {
+                    doc.style.setProperty(customVar, clientHeight * 0.01 + "px");
+                    prevClientHeight = clientHeight;
+                });
+            }
+            handleResize();
+            return handleResize;
+        }
+
+        window.addEventListener("resize", setViewportProperty(document.documentElement));
+    </script>
+</body>
+
+</html>

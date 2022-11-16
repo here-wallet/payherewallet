@@ -33,6 +33,7 @@
     "react": "^18.2.0",
     "react-alice-carousel": "^2.6.4",
     "react-dom": "^18.2.0",
+    "react-helmet": "^6.1.0",
     "react-phone-input-2": "^2.15.1",
     "react-router-dom": "^6.4.1",
     "react-scripts": "5.0.1",
@@ -45,7 +46,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build && cp -R .well-known ./build",
+    "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
@@ -70,6 +71,7 @@
   "devDependencies": {
     "@types/bn.js": "^5.1.1",
     "@types/crypto-js": "^4.1.1",
+    "@types/react-helmet": "^6.1.5",
     "@types/styled-components": "^5.1.26",
     "@types/toastify-js": "^1.11.1",
     "@types/uuid4": "^2.0.0"

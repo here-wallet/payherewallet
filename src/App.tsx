@@ -13,6 +13,7 @@ import EnterNFT from "./Send/EnterDetails/EnterNFT";
 import Connect, { isIOS } from "./Receive/Connect";
 import InstallHere from "./Receive/InstallHere";
 import LinkDrop from "./Receive/LinkDrop";
+import LinkPartner from "./Receive/LinkPartner";
 
 const App = () => {
   const app = useWallet();
@@ -50,6 +51,8 @@ const App = () => {
           element={<Connect account={account} onLogin={handleLogin} />}
         />
         <Route path="/l" element={<LinkDrop />} />
+        <Route path="/p" element={<LinkPartner />} />
+
         <Route
           path="/send/success"
           element={<SendSuccess account={account} />}
