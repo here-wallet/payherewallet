@@ -31,7 +31,7 @@ const EnterPhone = ({ account }: { account: Account | null }) => {
 
   const handlePhoneValid = (value: string, data: any) => {
     setTimeout(() => {
-      setPhoneValid(value.length === data.format.split(".").length - 1);
+      setPhoneValid(value.length >= 6);
     }, 0);
     return true;
   };

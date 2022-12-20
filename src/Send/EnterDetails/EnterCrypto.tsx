@@ -32,7 +32,7 @@ const EnterCrypto = ({ account }: { account: Account | null }) => {
   const [token, setToken] = useState(initSearch.token || "NEAR");
   const [phone, setPhone] = useState(initSearch.phone || "");
   const [receiver, setReceiver] = useState(initSearch.comment || "");
-  const isInvalid = isNaN(+amount) || isPhoneValid || !receiver;
+  const isInvalid = isNaN(+amount) || isPhoneValid;
 
   useEffect(() => {
     if (firstCall.current) {
@@ -70,7 +70,7 @@ const EnterCrypto = ({ account }: { account: Account | null }) => {
 
   const handlePhoneValid = (value: string, data: any) => {
     setTimeout(() => {
-      setPhoneValid(value.length !== data.format.split(".").length - 1);
+      setPhoneValid(value.length < 6);
     }, 0);
     return true;
   };

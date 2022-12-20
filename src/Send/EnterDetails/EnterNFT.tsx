@@ -34,7 +34,7 @@ const EnterNFT = ({ account }: { account: Account | null }) => {
   const [nft, setNft] = useState(initSearch.nft || "");
   const [phone, setPhone] = useState(initSearch.phone || "");
   const [receiver, setReceiver] = useState(initSearch.comment || "");
-  const isInvalid = !isPhoneValid || !receiver || !nft;
+  const isInvalid = !isPhoneValid || !nft;
 
   useEffect(() => {
     if (firstCall.current) {
@@ -61,7 +61,7 @@ const EnterNFT = ({ account }: { account: Account | null }) => {
 
   const handlePhoneValid = (value: string, data: any) => {
     setTimeout(() => {
-      setPhoneValid(value.length === data.format.split(".").length - 1);
+      setPhoneValid(value.length < 6);
     }, 0);
     return true;
   };
