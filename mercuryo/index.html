@@ -35,7 +35,8 @@
             host: document.getElementById('mercuryo-widget'),
             address: query.address,
             signature: query.signature,
-            currency: "NEAR"
+            type: query.type ?? "buy",
+            currency: query.currency ?? "NEAR",
         });
 
         var customViewportCorrectionVariable = "vh";

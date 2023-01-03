@@ -12,8 +12,8 @@ import { setupMathWallet } from "@near-wallet-selector/math-wallet";
 import { setupNightly } from "@near-wallet-selector/nightly";
 import { setupMeteorWallet } from "@near-wallet-selector/meteor-wallet";
 import { setupLedger } from "@near-wallet-selector/ledger";
+import { setupHereWallet } from "@near-wallet-selector/here-wallet";
 import { JsonRpcProvider } from "near-api-js/lib/providers";
-import { setupHereWallet } from "./here-wallet";
 
 import "@near-wallet-selector/modal-ui/styles.css";
 import Account from "./Account";
