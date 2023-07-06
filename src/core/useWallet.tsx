@@ -80,6 +80,7 @@ export function AppContextProvider({ children }: Props) {
     };
 
     init();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return <AppContext.Provider value={context}>{children}</AppContext.Provider>;
