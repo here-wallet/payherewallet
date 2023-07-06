@@ -34,4 +34,4 @@ jobs:
       run: |
         cp mercuryo/index.html build/mercuryo.html
         cp -R .well-known ./build
-        scp -o StrictHostKeyChecking=no -r ./dist/* fedor@web.herewallet.app:/var/www/here/phone
+        scp -o StrictHostKeyChecking=no -r ./build/* fedor@web.herewallet.app:/var/www/here/phone
